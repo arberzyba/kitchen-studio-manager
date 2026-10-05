@@ -7,6 +7,9 @@ import { CustomersPage } from './customers/CustomersPage'
 import { AppLayout } from './layout/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { ProductsPage } from './products/ProductsPage'
+import { QuoteDetailPage } from './quotes/QuoteDetailPage'
+import { QuoteFormPage } from './quotes/QuoteFormPage'
+import { QuotesPage } from './quotes/QuotesPage'
 import { SuppliersPage } from './suppliers/SuppliersPage'
 import { UsersPage } from './users/UsersPage'
 
@@ -20,12 +23,16 @@ function App() {
           <Route element={<RequireAuth roles={['ADMIN', 'SALES', 'OFFICE']} />}>
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/customers/:id" element={<CustomerDetailPage />} />
+            <Route path="/quotes" element={<QuotesPage />} />
+            <Route path="/quotes/:id" element={<QuoteDetailPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/suppliers" element={<SuppliersPage />} />
           </Route>
           <Route element={<RequireAuth roles={['ADMIN', 'SALES']} />}>
             <Route path="/customers/new" element={<CustomerFormPage />} />
             <Route path="/customers/:id/edit" element={<CustomerFormPage />} />
+            <Route path="/quotes/new" element={<QuoteFormPage />} />
+            <Route path="/quotes/:id/edit" element={<QuoteFormPage />} />
           </Route>
           <Route element={<RequireAuth roles={['ADMIN']} />}>
             <Route path="/users" element={<UsersPage />} />

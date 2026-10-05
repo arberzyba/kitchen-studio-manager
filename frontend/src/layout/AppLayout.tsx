@@ -1,4 +1,5 @@
 import ContactsIcon from '@mui/icons-material/Contacts'
+import DescriptionIcon from '@mui/icons-material/Description'
 import HomeIcon from '@mui/icons-material/Home'
 import InventoryIcon from '@mui/icons-material/Inventory2'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
@@ -35,6 +36,12 @@ const NAV_ITEMS: {
     to: '/customers',
     labelKey: 'nav.customers',
     icon: <ContactsIcon />,
+    roles: ['ADMIN', 'SALES', 'OFFICE'],
+  },
+  {
+    to: '/quotes',
+    labelKey: 'nav.quotes',
+    icon: <DescriptionIcon />,
     roles: ['ADMIN', 'SALES', 'OFFICE'],
   },
   {

@@ -32,10 +32,9 @@ export class ApiError extends Error {
   }
 }
 
-export async function api<T>(
-  path: string,
-  options: { method?: string; body?: unknown } = {},
-): Promise<T> {
+type RequestOptions = { method?: string; body?: unknown }
+
+async function request(path: string, options: RequestOptions) {
   const token = getToken()
   const response = await fetch(`/api${path}`, {
     method: options.method,
@@ -50,5 +49,17 @@ export async function api<T>(
     const problem = await response.json().catch(() => null)
     throw new ApiError(response.status, problem?.detail ?? 'Request failed')
   }
-  return response.json()
+  return response
+}
+
+export async function api<T>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> {
+  return (await request(path, options)).json()
+}
+
+// For file responses such as PDFs
+export async function apiBlob(path: string) {
+  return (await request(path, {})).blob()
 }
