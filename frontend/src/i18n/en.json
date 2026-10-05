@@ -18,6 +18,8 @@
   "nav": {
     "home": "Home",
     "customers": "Customers",
+    "products": "Products",
+    "suppliers": "Suppliers",
     "users": "Users",
     "signOut": "Sign out"
   },
@@ -91,5 +93,52 @@
     "summary": "What was discussed?",
     "add": "Add entry",
     "empty": "No entries yet"
+  },
+  "productCategories": {
+    "CABINET": "Cabinet",
+    "WORKTOP": "Worktop",
+    "APPLIANCE": "Appliance"
+  },
+  "productUnits": {
+    "PIECE": "Piece",
+    "METER": "Running metre"
+  },
+  "productUnitsShort": {
+    "PIECE": "pc",
+    "METER": "m"
+  },
+  "products": {
+    "title": "Products",
+    "new": "New product",
+    "edit": "Edit product",
+    "search": "Search name or article number",
+    "allCategories": "All categories",
+    "sku": "Article number",
+    "name": "Name",
+    "descriptionOptional": "Description (optional)",
+    "category": "Category",
+    "unit": "Unit",
+    "purchasePrice": "Purchase price (net)",
+    "sellingPrice": "Selling price (net)",
+    "supplier": "Supplier",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "required": "This field is required",
+    "priceInvalid": "Enter a price of 0 or more",
+    "supplierRequired": "Choose a supplier",
+    "skuTaken": "A product with this article number already exists"
+  },
+  "suppliers": {
+    "title": "Suppliers",
+    "new": "New supplier",
+    "edit": "Edit supplier",
+    "editSupplier": "Edit {{name}}",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "nameRequired": "Enter a name",
+    "emailInvalid": "Enter a valid email address",
+    "nameTaken": "A supplier with this name already exists"
   }
 }
