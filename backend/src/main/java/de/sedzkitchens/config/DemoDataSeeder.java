@@ -1,6 +1,10 @@
 package de.sedzkitchens.config;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -14,11 +18,16 @@ import de.sedzkitchens.customer.CustomerRepository;
 import de.sedzkitchens.customer.CustomerRequest;
 import de.sedzkitchens.customer.CustomerService;
 import de.sedzkitchens.customer.Salutation;
+import de.sedzkitchens.product.Product;
 import de.sedzkitchens.product.ProductCategory;
 import de.sedzkitchens.product.ProductRepository;
 import de.sedzkitchens.product.ProductRequest;
 import de.sedzkitchens.product.ProductService;
 import de.sedzkitchens.product.ProductUnit;
+import de.sedzkitchens.quote.QuoteRepository;
+import de.sedzkitchens.quote.QuoteRequest;
+import de.sedzkitchens.quote.QuoteService;
+import de.sedzkitchens.quote.QuoteStatus;
 import de.sedzkitchens.supplier.SupplierRequest;
 import de.sedzkitchens.supplier.SupplierService;
 import de.sedzkitchens.user.CreateUserRequest;
@@ -27,7 +36,7 @@ import de.sedzkitchens.user.UserRepository;
 import de.sedzkitchens.user.UserService;
 import lombok.RequiredArgsConstructor;
 
-// Fills an empty dev database with demo data: one login per role, customers, suppliers and products.
+// Fills an empty dev database with demo data: one login per role, customers, suppliers, products and quotes.
 @Component
 @Profile("dev")
 @RequiredArgsConstructor
@@ -49,6 +58,10 @@ public class DemoDataSeeder implements ApplicationRunner {
 
 	private final SupplierService supplierService;
 
+	private final QuoteRepository quoteRepository;
+
+	private final QuoteService quoteService;
+
 	@Override
 	public void run(ApplicationArguments args) {
 		if (userRepository.count() == 0) {
@@ -63,6 +76,60 @@ public class DemoDataSeeder implements ApplicationRunner {
 		if (productRepository.count() == 0) {
 			seedCatalog();
 		}
+		if (quoteRepository.count() == 0) {
+			seedQuotes();
+		}
+	}
+
+	// One quote in each stage: accepted, sent and still a draft
+	private void seedQuotes() {
+		Long salesId = userRepository.findByEmail("sales@sedzkitchens.de").orElseThrow().getId();
+		Map<String, Product> products = productRepository.findAll()
+			.stream()
+			.collect(Collectors.toMap(Product::getSku, product -> product));
+
+		Long accepted = createQuote(customerId("sabine.mueller@example.de"), "5.00",
+				"Lieferung und Montage nach Absprache, voraussichtlich in 6 bis 8 Wochen.", salesId,
+				item(products, "US-60-W", "4", "0"), item(products, "US-90-W", "2", "0"),
+				item(products, "HS-60-W", "5", "0"), item(products, "HO-60-W", "1", "0"),
+				item(products, "AP-QZ-20", "4.2", "0"), item(products, "EG-BO-60", "1", "0"),
+				item(products, "EG-IK-80", "1", "0"), item(products, "EG-GS-60", "1", "10"));
+		quoteService.changeStatus(accepted, QuoteStatus.SENT);
+		quoteService.changeStatus(accepted, QuoteStatus.ACCEPTED);
+
+		Long sent = createQuote(customerId("t.schmidt@example.de"), "0.00", null, salesId,
+				item(products, "US-60-W", "3", "0"), item(products, "SP-60-W", "1", "0"),
+				item(products, "HS-60-W", "3", "0"), item(products, "AP-EI-38", "2.8", "0"),
+				item(products, "EG-KS-178", "1", "0"), item(products, "EG-DA-90", "1", "0"));
+		quoteService.changeStatus(sent, QuoteStatus.SENT);
+
+		createQuote(customerId("m.krueger@krueger-hv.example.de"), "8.00",
+				"Preis je Küchenzeile; Angebot gilt für drei baugleiche Einheiten.", salesId,
+				item(products, "US-60-W", "6", "0"), item(products, "SP-60-W", "3", "0"),
+				item(products, "AP-EI-38", "5.4", "0"), item(products, "EG-BO-60", "3", "5"));
+	}
+
+	private Long customerId(String email) {
+		return customerRepository.findAll()
+			.stream()
+			.filter(customer -> email.equals(customer.getEmail()))
+			.findFirst()
+			.orElseThrow()
+			.getId();
+	}
+
+	private QuoteRequest.Item item(Map<String, Product> products, String sku, String quantity, String discount) {
+		Product product = products.get(sku);
+		return new QuoteRequest.Item(product.getId(), new BigDecimal(quantity), product.getSellingPrice(),
+				new BigDecimal(discount));
+	}
+
+	private Long createQuote(Long customerId, String discountPercent, String notes, Long userId,
+			QuoteRequest.Item... items) {
+		return quoteService
+			.create(new QuoteRequest(customerId, LocalDate.now().plusDays(30), new BigDecimal(discountPercent), notes,
+					List.of(items)), userId)
+			.id();
 	}
 
 	private void seedCatalog() {
