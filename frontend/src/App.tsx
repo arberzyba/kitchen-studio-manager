@@ -1,6 +1,9 @@
 import { Navigate, Route, Routes } from 'react-router'
 import { LoginPage } from './auth/LoginPage'
 import { RequireAuth } from './auth/RequireAuth'
+import { CustomerDetailPage } from './customers/CustomerDetailPage'
+import { CustomerFormPage } from './customers/CustomerFormPage'
+import { CustomersPage } from './customers/CustomersPage'
 import { AppLayout } from './layout/AppLayout'
 import { HomePage } from './pages/HomePage'
 import { UsersPage } from './users/UsersPage'
@@ -12,6 +15,14 @@ function App() {
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route element={<RequireAuth roles={['ADMIN', 'SALES', 'OFFICE']} />}>
+            <Route path="/customers" element={<CustomersPage />} />
+            <Route path="/customers/:id" element={<CustomerDetailPage />} />
+          </Route>
+          <Route element={<RequireAuth roles={['ADMIN', 'SALES']} />}>
+            <Route path="/customers/new" element={<CustomerFormPage />} />
+            <Route path="/customers/:id/edit" element={<CustomerFormPage />} />
+          </Route>
           <Route element={<RequireAuth roles={['ADMIN']} />}>
             <Route path="/users" element={<UsersPage />} />
           </Route>

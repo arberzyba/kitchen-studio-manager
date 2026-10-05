@@ -17,6 +17,7 @@
   },
   "nav": {
     "home": "Home",
+    "customers": "Customers",
     "users": "Users",
     "signOut": "Sign out"
   },
@@ -49,5 +50,46 @@
     "lastNameRequired": "Enter a last name",
     "emailTaken": "A user with this email already exists",
     "ownAccount": "You cannot change your own role or deactivate your own account"
+  },
+  "salutations": {
+    "MR": "Mr",
+    "MS": "Ms",
+    "NONE": "None"
+  },
+  "contactTypes": {
+    "CALL": "Call",
+    "EMAIL": "Email",
+    "MEETING": "Meeting",
+    "NOTE": "Note"
+  },
+  "customers": {
+    "title": "Customers",
+    "new": "New customer",
+    "edit": "Edit customer",
+    "search": "Search name, company, email or city",
+    "name": "Name",
+    "salutation": "Salutation",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "company": "Company",
+    "companyOptional": "Company (optional)",
+    "email": "Email",
+    "phone": "Phone",
+    "street": "Street and number",
+    "postalCode": "Postal code",
+    "city": "City",
+    "billingAddress": "Billing address",
+    "installationAddress": "Installation address",
+    "differentInstallationAddress": "Kitchen is installed at a different address",
+    "required": "This field is required",
+    "postalCodeInvalid": "Enter a 5-digit postal code",
+    "emailInvalid": "Enter a valid email address"
+  },
+  "contacts": {
+    "title": "Contact history",
+    "type": "Type",
+    "summary": "What was discussed?",
+    "add": "Add entry",
+    "empty": "No entries yet"
   }
 }
