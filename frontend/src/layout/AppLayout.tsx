@@ -1,3 +1,4 @@
+import ContactsIcon from '@mui/icons-material/Contacts'
 import HomeIcon from '@mui/icons-material/Home'
 import LogoutIcon from '@mui/icons-material/Logout'
 import PeopleIcon from '@mui/icons-material/People'
@@ -28,6 +29,12 @@ const NAV_ITEMS: {
   roles?: Role[]
 }[] = [
   { to: '/', labelKey: 'nav.home', icon: <HomeIcon /> },
+  {
+    to: '/customers',
+    labelKey: 'nav.customers',
+    icon: <ContactsIcon />,
+    roles: ['ADMIN', 'SALES', 'OFFICE'],
+  },
   {
     to: '/users',
     labelKey: 'nav.users',

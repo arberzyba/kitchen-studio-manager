@@ -17,6 +17,7 @@
   },
   "nav": {
     "home": "Start",
+    "customers": "Kunden",
     "users": "Benutzer",
     "signOut": "Abmelden"
   },
@@ -49,5 +50,46 @@
     "lastNameRequired": "Geben Sie einen Nachnamen ein",
     "emailTaken": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits",
     "ownAccount": "Sie können Ihre eigene Rolle nicht ändern und Ihr eigenes Konto nicht deaktivieren"
+  },
+  "salutations": {
+    "MR": "Herr",
+    "MS": "Frau",
+    "NONE": "Keine"
+  },
+  "contactTypes": {
+    "CALL": "Anruf",
+    "EMAIL": "E-Mail",
+    "MEETING": "Termin",
+    "NOTE": "Notiz"
+  },
+  "customers": {
+    "title": "Kunden",
+    "new": "Neuer Kunde",
+    "edit": "Kunde bearbeiten",
+    "search": "Name, Firma, E-Mail oder Ort suchen",
+    "name": "Name",
+    "salutation": "Anrede",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "company": "Firma",
+    "companyOptional": "Firma (optional)",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "street": "Straße und Hausnummer",
+    "postalCode": "PLZ",
+    "city": "Ort",
+    "billingAddress": "Rechnungsadresse",
+    "installationAddress": "Montageadresse",
+    "differentInstallationAddress": "Küche wird an einer anderen Adresse montiert",
+    "required": "Dieses Feld ist erforderlich",
+    "postalCodeInvalid": "Geben Sie eine 5-stellige PLZ ein",
+    "emailInvalid": "Geben Sie eine gültige E-Mail-Adresse ein"
+  },
+  "contacts": {
+    "title": "Kontakthistorie",
+    "type": "Art",
+    "summary": "Was wurde besprochen?",
+    "add": "Eintrag hinzufügen",
+    "empty": "Noch keine Einträge"
   }
 }

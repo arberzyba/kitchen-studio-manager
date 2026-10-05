@@ -12,6 +12,17 @@ export function setToken(token: string | null) {
   }
 }
 
+// Shape of paged list responses from the backend
+export type Page<T> = {
+  content: T[]
+  page: {
+    size: number
+    number: number
+    totalElements: number
+    totalPages: number
+  }
+}
+
 export class ApiError extends Error {
   status: number
 
