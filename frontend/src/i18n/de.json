@@ -18,6 +18,8 @@
   "nav": {
     "home": "Start",
     "customers": "Kunden",
+    "products": "Produkte",
+    "suppliers": "Lieferanten",
     "users": "Benutzer",
     "signOut": "Abmelden"
   },
@@ -91,5 +93,52 @@
     "summary": "Was wurde besprochen?",
     "add": "Eintrag hinzufügen",
     "empty": "Noch keine Einträge"
+  },
+  "productCategories": {
+    "CABINET": "Schrank",
+    "WORKTOP": "Arbeitsplatte",
+    "APPLIANCE": "Elektrogerät"
+  },
+  "productUnits": {
+    "PIECE": "Stück",
+    "METER": "Laufender Meter"
+  },
+  "productUnitsShort": {
+    "PIECE": "Stk.",
+    "METER": "m"
+  },
+  "products": {
+    "title": "Produkte",
+    "new": "Neues Produkt",
+    "edit": "Produkt bearbeiten",
+    "search": "Name oder Artikelnummer suchen",
+    "allCategories": "Alle Kategorien",
+    "sku": "Artikelnummer",
+    "name": "Bezeichnung",
+    "descriptionOptional": "Beschreibung (optional)",
+    "category": "Kategorie",
+    "unit": "Einheit",
+    "purchasePrice": "Einkaufspreis (netto)",
+    "sellingPrice": "Verkaufspreis (netto)",
+    "supplier": "Lieferant",
+    "status": "Status",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "required": "Dieses Feld ist erforderlich",
+    "priceInvalid": "Geben Sie einen Preis ab 0 ein",
+    "supplierRequired": "Wählen Sie einen Lieferanten",
+    "skuTaken": "Ein Produkt mit dieser Artikelnummer existiert bereits"
+  },
+  "suppliers": {
+    "title": "Lieferanten",
+    "new": "Neuer Lieferant",
+    "edit": "Lieferant bearbeiten",
+    "editSupplier": "{{name}} bearbeiten",
+    "name": "Name",
+    "email": "E-Mail",
+    "phone": "Telefon",
+    "nameRequired": "Geben Sie einen Namen ein",
+    "emailInvalid": "Geben Sie eine gültige E-Mail-Adresse ein",
+    "nameTaken": "Ein Lieferant mit diesem Namen existiert bereits"
   }
 }

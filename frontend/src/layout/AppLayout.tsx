@@ -1,5 +1,7 @@
 import ContactsIcon from '@mui/icons-material/Contacts'
 import HomeIcon from '@mui/icons-material/Home'
+import InventoryIcon from '@mui/icons-material/Inventory2'
+import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import LogoutIcon from '@mui/icons-material/Logout'
 import PeopleIcon from '@mui/icons-material/People'
 import AppBar from '@mui/material/AppBar'
@@ -33,6 +35,18 @@ const NAV_ITEMS: {
     to: '/customers',
     labelKey: 'nav.customers',
     icon: <ContactsIcon />,
+    roles: ['ADMIN', 'SALES', 'OFFICE'],
+  },
+  {
+    to: '/products',
+    labelKey: 'nav.products',
+    icon: <InventoryIcon />,
+    roles: ['ADMIN', 'SALES', 'OFFICE'],
+  },
+  {
+    to: '/suppliers',
+    labelKey: 'nav.suppliers',
+    icon: <LocalShippingIcon />,
     roles: ['ADMIN', 'SALES', 'OFFICE'],
   },
   {
