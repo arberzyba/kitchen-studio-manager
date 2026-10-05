@@ -1,0 +1,279 @@
+import EditIcon from '@mui/icons-material/Edit'
+import EmailIcon from '@mui/icons-material/Email'
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf'
+import Alert from '@mui/material/Alert'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogContentText from '@mui/material/DialogContentText'
+import DialogTitle from '@mui/material/DialogTitle'
+import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Typography from '@mui/material/Typography'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Link, useParams } from 'react-router'
+import { api, apiBlob } from '../api/client'
+import { useAuth } from '../auth/AuthContext'
+import { formatCurrency, formatDate, formatNumber } from '../i18n/format'
+import { QuoteStatusChip, QuoteTotals } from './QuoteParts'
+import { canEditQuotes, type Quote, type QuoteStatus } from './types'
+
+export function QuoteDetailPage() {
+  const { t } = useTranslation()
+  const { id } = useParams()
+  const { user } = useAuth()
+  const queryClient = useQueryClient()
+  const [confirmSend, setConfirmSend] = useState(false)
+  const quote = useQuery({
+    queryKey: ['quote', id],
+    queryFn: () => api<Quote>(`/quotes/${id}`),
+  })
+
+  function onChanged(updated: Quote) {
+    queryClient.setQueryData(['quote', id], updated)
+    queryClient.invalidateQueries({ queryKey: ['quotes'] })
+  }
+
+  const changeStatus = useMutation({
+    mutationFn: (status: QuoteStatus) =>
+      api<Quote>(`/quotes/${id}/status`, { method: 'POST', body: { status } }),
+    onSuccess: onChanged,
+  })
+  const send = useMutation({
+    mutationFn: () => api<Quote>(`/quotes/${id}/send`, { method: 'POST' }),
+    onSuccess: onChanged,
+    onSettled: () => setConfirmSend(false),
+  })
+  const downloadPdf = useMutation({
+    mutationFn: async (quoteNumber: string) => {
+      // The PDF needs the login token, so it is fetched here and then handed to the browser as a download
+      const url = URL.createObjectURL(await apiBlob(`/quotes/${id}/pdf`))
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `Angebot-${quoteNumber}.pdf`
+      link.click()
+      URL.revokeObjectURL(url)
+    },
+  })
+
+  if (quote.isError) {
+    return <Alert severity="error">{t('common.error')}</Alert>
+  }
+  if (!quote.data) {
+    return null
+  }
+  const { status, customerEmail } = quote.data
+  const canEdit = canEditQuotes(user)
+  const canSend = canEdit && (status === 'DRAFT' || status === 'SENT')
+
+  return (
+    <Stack spacing={3}>
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+      >
+        <Stack direction="row" spacing={2} sx={{ alignItems: 'center' }}>
+          <Typography variant="h4" component="h1">
+            {t('quotes.heading', { number: quote.data.quoteNumber })}
+          </Typography>
+          <QuoteStatusChip status={status} />
+        </Stack>
+        <Stack direction="row" spacing={1}>
+          {canEdit && status === 'DRAFT' && (
+            <Button
+              variant="outlined"
+              startIcon={<EditIcon />}
+              component={Link}
+              to={`/quotes/${id}/edit`}
+            >
+              {t('quotes.edit')}
+            </Button>
+          )}
+          <Button
+            variant="outlined"
+            startIcon={<PictureAsPdfIcon />}
+            loading={downloadPdf.isPending}
+            onClick={() => downloadPdf.mutate(quote.data.quoteNumber)}
+          >
+            {t('quotes.pdf')}
+          </Button>
+          {canSend && (
+            <Button
+              variant="contained"
+              startIcon={<EmailIcon />}
+              disabled={!customerEmail}
+              onClick={() => setConfirmSend(true)}
+            >
+              {status === 'SENT' ? t('quotes.sendAgain') : t('quotes.send')}
+            </Button>
+          )}
+        </Stack>
+      </Stack>
+
+      {canSend && !customerEmail && (
+        <Alert severity="info">{t('quotes.noEmail')}</Alert>
+      )}
+      {send.isSuccess && (
+        <Alert severity="success">
+          {t('quotes.sentTo', { email: customerEmail })}
+        </Alert>
+      )}
+      {(send.isError || changeStatus.isError || downloadPdf.isError) && (
+        <Alert severity="error">{t('common.error')}</Alert>
+      )}
+
+      <Paper sx={{ p: 3 }}>
+        <Stack direction={{ xs: 'column', md: 'row' }} spacing={4}>
+          <Detail label={t('quotes.customer')}>
+            <Link to={`/customers/${quote.data.customerId}`}>
+              {quote.data.customerName}
+            </Link>
+          </Detail>
+          <Detail label={t('quotes.date')}>
+            {formatDate(quote.data.quoteDate)}
+          </Detail>
+          <Detail label={t('quotes.validUntil')}>
+            {formatDate(quote.data.validUntil)}
+          </Detail>
+          <Detail label={t('quotes.createdBy')}>
+            {quote.data.createdByName}
+          </Detail>
+        </Stack>
+      </Paper>
+
+      <Paper sx={{ p: 3 }}>
+        <TableContainer>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('quotes.articleNumber')}</TableCell>
+                <TableCell>{t('quotes.product')}</TableCell>
+                <TableCell align="right">{t('quotes.quantity')}</TableCell>
+                <TableCell align="right">{t('quotes.unitPrice')}</TableCell>
+                <TableCell align="right">{t('quotes.discount')}</TableCell>
+                <TableCell align="right">{t('quotes.lineTotal')}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {quote.data.items.map((item, index) => (
+                <TableRow key={index}>
+                  <TableCell>{item.sku}</TableCell>
+                  <TableCell>{item.description}</TableCell>
+                  <TableCell align="right">
+                    {formatNumber(item.quantity)}{' '}
+                    {t(`productUnitsShort.${item.unit}`)}
+                  </TableCell>
+                  <TableCell align="right">
+                    {formatCurrency(item.unitPrice)}
+                  </TableCell>
+                  <TableCell align="right">
+                    {item.discountPercent > 0 &&
+                      `${formatNumber(item.discountPercent)} %`}
+                  </TableCell>
+                  <TableCell align="right">
+                    {formatCurrency(item.lineTotal)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Stack sx={{ mt: 2 }}>
+          <QuoteTotals
+            totals={quote.data}
+            discountPercent={quote.data.discountPercent}
+            vatRate={quote.data.vatRate}
+          />
+        </Stack>
+        {quote.data.notes && (
+          <Typography sx={{ mt: 2, whiteSpace: 'pre-wrap' }}>
+            {quote.data.notes}
+          </Typography>
+        )}
+      </Paper>
+
+      {canEdit && (status === 'DRAFT' || status === 'SENT') && (
+        <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>
+          {status === 'DRAFT' && (
+            <Button
+              loading={changeStatus.isPending}
+              onClick={() => changeStatus.mutate('SENT')}
+            >
+              {t('quotes.markSent')}
+            </Button>
+          )}
+          {status === 'SENT' && (
+            <>
+              <Button
+                color="error"
+                loading={changeStatus.isPending}
+                onClick={() => changeStatus.mutate('REJECTED')}
+              >
+                {t('quotes.markRejected')}
+              </Button>
+              <Button
+                color="success"
+                variant="contained"
+                loading={changeStatus.isPending}
+                onClick={() => changeStatus.mutate('ACCEPTED')}
+              >
+                {t('quotes.markAccepted')}
+              </Button>
+            </>
+          )}
+        </Stack>
+      )}
+
+      <Dialog open={confirmSend} onClose={() => setConfirmSend(false)}>
+        <DialogTitle>{t('quotes.send')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {t('quotes.confirmSend', {
+              number: quote.data.quoteNumber,
+              email: customerEmail,
+            })}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmSend(false)}>
+            {t('common.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            loading={send.isPending}
+            onClick={() => send.mutate()}
+          >
+            {t('quotes.confirmSendButton')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Stack>
+  )
+}
+
+function Detail({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div>
+      <Typography variant="caption" color="text.secondary">
+        {label}
+      </Typography>
+      <Typography component="div">{children}</Typography>
+    </div>
+  )
+}

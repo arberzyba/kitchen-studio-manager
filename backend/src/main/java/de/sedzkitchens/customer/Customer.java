@@ -59,4 +59,8 @@ public class Customer {
 	@UpdateTimestamp
 	private Instant updatedAt;
 
+	public String getDisplayName() {
+		return firstName + " " + lastName;
+	}
+
 }

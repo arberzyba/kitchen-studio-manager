@@ -12,10 +12,22 @@ export function formatDateTime(value: string) {
   }).format(new Date(value))
 }
 
+// For plain dates such as 2026-10-05: 05.10.2026 in German, 5 Oct 2026 in English
+export function formatDate(value: string) {
+  return new Intl.DateTimeFormat(locale(), { dateStyle: 'medium' }).format(
+    new Date(value),
+  )
+}
+
 // German amounts read 1.299,00 €; English ones €1,299.00
 export function formatCurrency(value: number) {
   return new Intl.NumberFormat(locale(), {
     style: 'currency',
     currency: 'EUR',
   }).format(value)
+}
+
+// 4,2 in German, 4.2 in English
+export function formatNumber(value: number) {
+  return new Intl.NumberFormat(locale()).format(value)
 }
