@@ -1,0 +1,53 @@
+{
+  "common": {
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+  },
+  "language": {
+    "switchTo": "English"
+  },
+  "login": {
+    "email": "E-Mail",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "invalid": "E-Mail oder Passwort ist falsch",
+    "emailInvalid": "Geben Sie eine gültige E-Mail-Adresse ein",
+    "passwordRequired": "Geben Sie Ihr Passwort ein"
+  },
+  "nav": {
+    "home": "Start",
+    "users": "Benutzer",
+    "signOut": "Abmelden"
+  },
+  "home": {
+    "welcome": "Willkommen, {{name}}"
+  },
+  "roles": {
+    "ADMIN": "Administrator",
+    "SALES": "Vertrieb",
+    "OFFICE": "Büro",
+    "INSTALLER": "Monteur"
+  },
+  "users": {
+    "title": "Benutzer",
+    "new": "Neuer Benutzer",
+    "edit": "Benutzer bearbeiten",
+    "editUser": "{{email}} bearbeiten",
+    "name": "Name",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "role": "Rolle",
+    "status": "Status",
+    "active": "Aktiv",
+    "inactive": "Inaktiv",
+    "emailInvalid": "Geben Sie eine gültige E-Mail-Adresse ein",
+    "passwordTooShort": "Mindestens 8 Zeichen verwenden",
+    "firstNameRequired": "Geben Sie einen Vornamen ein",
+    "lastNameRequired": "Geben Sie einen Nachnamen ein",
+    "emailTaken": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits",
+    "ownAccount": "Sie können Ihre eigene Rolle nicht ändern und Ihr eigenes Konto nicht deaktivieren"
+  }
+}

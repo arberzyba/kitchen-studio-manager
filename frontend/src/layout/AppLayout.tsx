@@ -12,8 +12,10 @@ import ListItemText from '@mui/material/ListItemText'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
+import { LanguageButton } from '../i18n/LanguageButton'
 import type { Role } from '../users/types'
 
 const DRAWER_WIDTH = 220
@@ -21,15 +23,21 @@ const DRAWER_WIDTH = 220
 // Entries without "roles" are visible to every employee
 const NAV_ITEMS: {
   to: string
-  label: string
+  labelKey: string
   icon: ReactNode
   roles?: Role[]
 }[] = [
-  { to: '/', label: 'Home', icon: <HomeIcon /> },
-  { to: '/users', label: 'Users', icon: <PeopleIcon />, roles: ['ADMIN'] },
+  { to: '/', labelKey: 'nav.home', icon: <HomeIcon /> },
+  {
+    to: '/users',
+    labelKey: 'nav.users',
+    icon: <PeopleIcon />,
+    roles: ['ADMIN'],
+  },
 ]
 
 export function AppLayout() {
+  const { t } = useTranslation()
   const { user, logout } = useAuth()
   if (!user) {
     return null
@@ -46,10 +54,11 @@ export function AppLayout() {
             SedzKitchens
           </Typography>
           <Typography variant="body2" sx={{ mr: 2 }}>
-            {user.firstName} {user.lastName} ({user.role})
+            {user.firstName} {user.lastName} ({t(`roles.${user.role}`)})
           </Typography>
+          <LanguageButton />
           <Button color="inherit" startIcon={<LogoutIcon />} onClick={logout}>
-            Sign out
+            {t('nav.signOut')}
           </Button>
         </Toolbar>
       </AppBar>
@@ -72,7 +81,7 @@ export function AppLayout() {
               sx={{ '&.active': { bgcolor: 'action.selected' } }}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
-              <ListItemText primary={item.label} />
+              <ListItemText primary={t(item.labelKey)} />
             </ListItemButton>
           ))}
         </List>

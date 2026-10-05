@@ -1,0 +1,53 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "error": "Something went wrong. Please try again."
+  },
+  "language": {
+    "switchTo": "Deutsch"
+  },
+  "login": {
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "invalid": "Invalid email or password",
+    "emailInvalid": "Enter a valid email address",
+    "passwordRequired": "Enter your password"
+  },
+  "nav": {
+    "home": "Home",
+    "users": "Users",
+    "signOut": "Sign out"
+  },
+  "home": {
+    "welcome": "Welcome, {{name}}"
+  },
+  "roles": {
+    "ADMIN": "Administrator",
+    "SALES": "Sales",
+    "OFFICE": "Office",
+    "INSTALLER": "Installer"
+  },
+  "users": {
+    "title": "Users",
+    "new": "New user",
+    "edit": "Edit user",
+    "editUser": "Edit {{email}}",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "role": "Role",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "emailInvalid": "Enter a valid email address",
+    "passwordTooShort": "Use at least 8 characters",
+    "firstNameRequired": "Enter a first name",
+    "lastNameRequired": "Enter a last name",
+    "emailTaken": "A user with this email already exists",
+    "ownAccount": "You cannot change your own role or deactivate your own account"
+  }
+}
