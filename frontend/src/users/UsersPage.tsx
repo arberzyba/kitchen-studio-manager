@@ -15,11 +15,13 @@ import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { api } from '../api/client'
 import type { User } from './types'
 import { UserDialog } from './UserDialog'
 
 export function UsersPage() {
+  const { t } = useTranslation()
   const users = useQuery({
     queryKey: ['users'],
     queryFn: () => api<User[]>('/users'),
@@ -34,25 +36,25 @@ export function UsersPage() {
         sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}
       >
         <Typography variant="h4" component="h1">
-          Users
+          {t('users.title')}
         </Typography>
         <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => setDialog('new')}
         >
-          New user
+          {t('users.new')}
         </Button>
       </Stack>
-      {users.isError && <Alert severity="error">{users.error.message}</Alert>}
+      {users.isError && <Alert severity="error">{t('common.error')}</Alert>}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Email</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Status</TableCell>
+              <TableCell>{t('users.name')}</TableCell>
+              <TableCell>{t('users.email')}</TableCell>
+              <TableCell>{t('users.role')}</TableCell>
+              <TableCell>{t('users.status')}</TableCell>
               <TableCell />
             </TableRow>
           </TableHead>
@@ -63,17 +65,19 @@ export function UsersPage() {
                   {user.firstName} {user.lastName}
                 </TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell>{user.role}</TableCell>
+                <TableCell>{t(`roles.${user.role}`)}</TableCell>
                 <TableCell>
                   <Chip
                     size="small"
-                    label={user.active ? 'Active' : 'Inactive'}
+                    label={
+                      user.active ? t('users.active') : t('users.inactive')
+                    }
                     color={user.active ? 'success' : 'default'}
                   />
                 </TableCell>
                 <TableCell align="right">
                   <IconButton
-                    aria-label={`Edit ${user.email}`}
+                    aria-label={t('users.editUser', { email: user.email })}
                     onClick={() => setDialog(user)}
                   >
                     <EditIcon />

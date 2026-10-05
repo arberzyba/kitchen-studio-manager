@@ -56,3 +56,23 @@ test('installer has no access to user management', async ({ page }) => {
   await page.goto('/users')
   await expect(page).toHaveURL('/')
 })
+
+test('language can be switched to German and is remembered', async ({
+  page,
+}) => {
+  await page.goto('/login')
+  await page.getByRole('button', { name: 'Deutsch' }).click()
+  await expect(page.getByRole('button', { name: 'Anmelden' })).toBeVisible()
+
+  await page.reload()
+  await expect(page.getByLabel('Passwort')).toBeVisible()
+
+  await page.getByLabel('E-Mail').fill('admin@sedzkitchens.de')
+  await page.getByLabel('Passwort').fill('demo1234')
+  await page.getByRole('button', { name: 'Anmelden' }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Willkommen, Anna' }),
+  ).toBeVisible()
+  await expect(page.getByText('Anna Schneider (Administrator)')).toBeVisible()
+  await page.screenshot({ path: 'test-results/german.png' })
+})
