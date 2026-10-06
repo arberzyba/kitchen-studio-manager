@@ -1,6 +1,7 @@
 package de.sedzkitchens.config;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -22,6 +23,9 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableMethodSecurity
@@ -37,13 +41,33 @@ public class SecurityConfig {
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		// Stateless API: every request carries its JWT, so there is no session and no CSRF token
 		http.csrf(csrf -> csrf.disable())
+			.cors(Customizer.withDefaults())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.authorizeHttpRequests(requests -> requests.requestMatchers("/api/auth/login", "/api/health/**")
+			.authorizeHttpRequests(requests -> requests
+				// Login, health check and the API documentation are public; everything else needs a token
+				.requestMatchers("/api/auth/login", "/api/health/**", "/v3/api-docs/**", "/swagger-ui/**",
+						"/swagger-ui.html")
 				.permitAll()
 				.anyRequest()
 				.authenticated())
 			.oauth2ResourceServer(resourceServer -> resourceServer.jwt(Customizer.withDefaults()));
 		return http.build();
+	}
+
+	// Needed when the frontend is served from a different address than the API, as in production.
+	// In development the Vite dev server forwards API calls, so no origin has to be allowed.
+	@Bean
+	CorsConfigurationSource corsConfigurationSource(
+			@Value("${app.cors.allowed-origins:}") List<String> allowedOrigins) {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(allowedOrigins);
+		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+		configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+		// Lets the browser read the file name of downloads
+		configuration.setExposedHeaders(List.of("Content-Disposition"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/api/**", configuration);
+		return source;
 	}
 
 	@Bean
