@@ -13,7 +13,6 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import de.sedzkitchens.appointment.AppointmentRepository;
 import de.sedzkitchens.appointment.AppointmentRequest;
 import de.sedzkitchens.appointment.AppointmentService;
 import de.sedzkitchens.appointment.AppointmentType;
@@ -24,10 +23,8 @@ import de.sedzkitchens.customer.CustomerRepository;
 import de.sedzkitchens.customer.CustomerRequest;
 import de.sedzkitchens.customer.CustomerService;
 import de.sedzkitchens.customer.Salutation;
-import de.sedzkitchens.invoice.InvoiceRepository;
 import de.sedzkitchens.invoice.InvoiceRequests;
 import de.sedzkitchens.invoice.InvoiceService;
-import de.sedzkitchens.order.OrderRepository;
 import de.sedzkitchens.order.OrderService;
 import de.sedzkitchens.product.Product;
 import de.sedzkitchens.product.ProductCategory;
@@ -35,13 +32,11 @@ import de.sedzkitchens.product.ProductRepository;
 import de.sedzkitchens.product.ProductRequest;
 import de.sedzkitchens.product.ProductService;
 import de.sedzkitchens.product.ProductUnit;
-import de.sedzkitchens.quote.QuoteRepository;
 import de.sedzkitchens.quote.QuoteRequest;
 import de.sedzkitchens.quote.QuoteService;
 import de.sedzkitchens.quote.QuoteStatus;
 import de.sedzkitchens.supplier.SupplierRequest;
 import de.sedzkitchens.supplier.SupplierService;
-import de.sedzkitchens.supplierorder.SupplierOrderRepository;
 import de.sedzkitchens.supplierorder.SupplierOrderRequests;
 import de.sedzkitchens.supplierorder.SupplierOrderService;
 import de.sedzkitchens.user.CreateUserRequest;
@@ -50,8 +45,8 @@ import de.sedzkitchens.user.UserRepository;
 import de.sedzkitchens.user.UserService;
 import lombok.RequiredArgsConstructor;
 
-// Fills an empty dev database with demo data: one login per role, customers, suppliers, products, quotes, an order, its appointments,
-// supplier orders and invoice.
+// Fills an empty dev database with demo data: one login per role, customers, suppliers and products,
+// completed kitchens from earlier months, and one current kitchen that is still in progress.
 @Component
 @Profile("dev")
 @RequiredArgsConstructor
@@ -73,91 +68,67 @@ public class DemoDataSeeder implements ApplicationRunner {
 
 	private final SupplierService supplierService;
 
-	private final QuoteRepository quoteRepository;
-
 	private final QuoteService quoteService;
-
-	private final OrderRepository orderRepository;
 
 	private final OrderService orderService;
 
-	private final AppointmentRepository appointmentRepository;
-
 	private final AppointmentService appointmentService;
-
-	private final SupplierOrderRepository supplierOrderRepository;
 
 	private final SupplierOrderService supplierOrderService;
 
-	private final InvoiceRepository invoiceRepository;
-
 	private final InvoiceService invoiceService;
+
+	private final DemoHistorySeeder historySeeder;
 
 	@Override
 	public void run(ApplicationArguments args) {
-		if (userRepository.count() == 0) {
-			createUser("admin@sedzkitchens.de", "Anna", "Schneider", Role.ADMIN);
-			createUser("sales@sedzkitchens.de", "Lukas", "Weber", Role.SALES);
-			createUser("office@sedzkitchens.de", "Petra", "Hoffmann", Role.OFFICE);
-			createUser("installer@sedzkitchens.de", "Jonas", "Becker", Role.INSTALLER);
+		// Only an empty database is seeded, so restarting never duplicates or overwrites data
+		if (userRepository.count() > 0) {
+			return;
 		}
-		if (customerRepository.count() == 0) {
-			seedCustomers();
-		}
-		if (productRepository.count() == 0) {
-			seedCatalog();
-		}
-		if (quoteRepository.count() == 0) {
-			seedQuotes();
-		}
-		if (orderRepository.count() == 0) {
-			seedOrder();
-		}
-		if (appointmentRepository.count() == 0) {
-			seedAppointments();
-		}
-		if (supplierOrderRepository.count() == 0) {
-			seedSupplierOrders();
-		}
-		if (invoiceRepository.count() == 0) {
-			seedInvoice();
+		createUser("admin@sedzkitchens.de", "Anna", "Schneider", Role.ADMIN);
+		createUser("sales@sedzkitchens.de", "Lukas", "Weber", Role.SALES);
+		createUser("office@sedzkitchens.de", "Petra", "Hoffmann", Role.OFFICE);
+		createUser("installer@sedzkitchens.de", "Jonas", "Becker", Role.INSTALLER);
+		seedCustomers();
+		seedCatalog();
+		// History first, so document numbers and dates run in the same order
+		historySeeder.seed();
+
+		Long orderId = seedOrder(seedQuotes());
+		seedAppointments(orderId);
+		seedSupplierOrders(orderId);
+		seedInvoice(orderId);
+	}
+
+	// Invoices the current order and records a deposit, leaving the rest open
+	private void seedInvoice(Long orderId) {
+		Long invoiceId = invoiceService
+			.create(new InvoiceRequests.Create(orderId, LocalDate.now(), LocalDate.now().plusDays(14)))
+			.id();
+		invoiceService.addPayment(invoiceId,
+				new InvoiceRequests.AddPayment(new BigDecimal("2000.00"), LocalDate.now(), "Anzahlung"));
+	}
+
+	// Orders the current order's cabinets (due next week) and worktops (due later); the appliances are left to order
+	private void seedSupplierOrders(Long orderId) {
+		int[] daysUntilDelivery = { 7, 9 };
+		var pending = supplierOrderService.findPending(orderId);
+		for (int i = 0; i < daysUntilDelivery.length; i++) {
+			supplierOrderService.create(new SupplierOrderRequests.Create(orderId, pending.get(i).supplierId(),
+					LocalDate.now().plusDays(daysUntilDelivery[i]), null));
 		}
 	}
 
-	// Invoices the demo order and records a deposit, leaving the rest open
-	private void seedInvoice() {
-		orderRepository.findAll().stream().findFirst().ifPresent(order -> {
-			Long invoiceId = invoiceService
-				.create(new InvoiceRequests.Create(order.getId(), LocalDate.now(), LocalDate.now().plusDays(14)))
-				.id();
-			invoiceService.addPayment(invoiceId,
-					new InvoiceRequests.AddPayment(new BigDecimal("2000.00"), LocalDate.now(), "Anzahlung"));
-		});
-	}
-
-	// Orders the demo order's cabinets (due next week) and worktops (due later); the appliances are left to order
-	private void seedSupplierOrders() {
-		orderRepository.findAll().stream().findFirst().ifPresent(order -> {
-			int[] daysUntilDelivery = { 7, 9 };
-			var pending = supplierOrderService.findPending(order.getId());
-			for (int i = 0; i < Math.min(daysUntilDelivery.length, pending.size()); i++) {
-				supplierOrderService.create(new SupplierOrderRequests.Create(order.getId(), pending.get(i).supplierId(),
-						LocalDate.now().plusDays(daysUntilDelivery[i]), null));
-			}
-		});
-	}
-
-	// A past measurement plus an upcoming delivery and installation for the demo order
-	private void seedAppointments() {
+	// A past measurement plus an upcoming delivery and installation for the current order
+	private void seedAppointments(Long orderId) {
 		Long salesId = userRepository.findByEmail("sales@sedzkitchens.de").orElseThrow().getId();
 		Long installerId = userRepository.findByEmail("installer@sedzkitchens.de").orElseThrow().getId();
-		orderRepository.findAll().stream().findFirst().ifPresent(order -> {
-			createAppointment(order.getId(), AppointmentType.MEASUREMENT, -5, "10:00", "11:00", salesId,
-					"Aufmaß vor Ort, Wasseranschluss und Steckdosen prüfen.");
-			createAppointment(order.getId(), AppointmentType.DELIVERY, 10, "08:00", "10:00", installerId,
-					"Anlieferung über den Hof, 2. Obergeschoss ohne Aufzug.");
-			createAppointment(order.getId(), AppointmentType.INSTALLATION, 12, "08:00", "16:30", installerId, null);
-		});
+		createAppointment(orderId, AppointmentType.MEASUREMENT, -5, "10:00", "11:00", salesId,
+				"Aufmaß vor Ort, Wasseranschluss und Steckdosen prüfen.");
+		createAppointment(orderId, AppointmentType.DELIVERY, 10, "08:00", "10:00", installerId,
+				"Anlieferung über den Hof, 2. Obergeschoss ohne Aufzug.");
+		createAppointment(orderId, AppointmentType.INSTALLATION, 12, "08:00", "16:30", installerId, null);
 	}
 
 	private void createAppointment(Long orderId, AppointmentType type, int daysFromToday, String start, String end,
@@ -169,18 +140,14 @@ public class DemoDataSeeder implements ApplicationRunner {
 				day.atTime(LocalTime.parse(end)).atZone(zone).toInstant(), assigneeId, notes));
 	}
 
-	// Turns the accepted demo quote into an order that has already been measured
-	private void seedOrder() {
+	// Turns the accepted quote into an order that has already been measured
+	private Long seedOrder(Long acceptedQuoteId) {
 		Long salesId = userRepository.findByEmail("sales@sedzkitchens.de").orElseThrow().getId();
-		quoteRepository.findAll()
-			.stream()
-			.filter(quote -> quote.getStatus() == QuoteStatus.ACCEPTED)
-			.findFirst()
-			.ifPresent(quote -> orderService.advance(orderService.createFromQuote(quote.getId(), salesId).id()));
+		return orderService.advance(orderService.createFromQuote(acceptedQuoteId, salesId).id()).id();
 	}
 
-	// One quote in each stage: accepted, sent and still a draft
-	private void seedQuotes() {
+	// One quote in each stage: accepted, sent and still a draft. Returns the accepted one.
+	private Long seedQuotes() {
 		Long salesId = userRepository.findByEmail("sales@sedzkitchens.de").orElseThrow().getId();
 		Map<String, Product> products = productRepository.findAll()
 			.stream()
@@ -205,6 +172,7 @@ public class DemoDataSeeder implements ApplicationRunner {
 				"Preis je Küchenzeile; Angebot gilt für drei baugleiche Einheiten.", salesId,
 				item(products, "US-60-W", "6", "0"), item(products, "SP-60-W", "3", "0"),
 				item(products, "AP-EI-38", "5.4", "0"), item(products, "EG-BO-60", "3", "5"));
+		return accepted;
 	}
 
 	private Long customerId(String email) {

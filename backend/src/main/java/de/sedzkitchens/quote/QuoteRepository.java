@@ -1,5 +1,8 @@
 package de.sedzkitchens.quote;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -19,5 +22,22 @@ public interface QuoteRepository extends JpaRepository<Quote, Long> {
 			  and (:status is null or q.status = :status)
 			""")
 	Page<Quote> search(@Param("pattern") String pattern, @Param("status") QuoteStatus status, Pageable pageable);
+
+	// Number of quotes and their combined gross value per status, for the dashboard
+	@Query("""
+			select q.status as status, count(q) as count, coalesce(sum(q.grossTotal), 0) as grossTotal
+			from Quote q group by q.status
+			""")
+	List<StatusSummary> summarizeByStatus();
+
+	interface StatusSummary {
+
+		QuoteStatus getStatus();
+
+		long getCount();
+
+		BigDecimal getGrossTotal();
+
+	}
 
 }

@@ -1,6 +1,8 @@
 package de.sedzkitchens.invoice;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,5 +32,14 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 			Pageable pageable);
 
 	boolean existsBySalesOrderId(Long salesOrderId);
+
+	List<Invoice> findByInvoiceDateGreaterThanEqual(LocalDate from);
+
+	// What is still owed on invoices that are not fully paid and were due before the given day
+	@Query("""
+			select coalesce(sum(i.grossTotal - i.paidTotal), 0) from Invoice i
+			where i.status <> de.sedzkitchens.invoice.InvoiceStatus.PAID and i.dueDate < :today
+			""")
+	BigDecimal sumOverdueOpenAmount(@Param("today") LocalDate today);
 
 }
