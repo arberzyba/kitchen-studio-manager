@@ -31,6 +31,13 @@ public class UserController {
 		return userService.findAll();
 	}
 
+	// Active employees for the "assigned to" choice when planning appointments
+	@GetMapping("/assignable")
+	@PreAuthorize("hasAnyRole('ADMIN', 'SALES', 'OFFICE')")
+	public List<AssignableUserResponse> findAssignable() {
+		return userService.findAssignable();
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public UserResponse create(@Valid @RequestBody CreateUserRequest request) {

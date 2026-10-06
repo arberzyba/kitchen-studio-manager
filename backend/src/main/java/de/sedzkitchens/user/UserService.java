@@ -24,6 +24,14 @@ public class UserService {
 		return userRepository.findAll(Sort.by("lastName", "firstName")).stream().map(UserResponse::from).toList();
 	}
 
+	public List<AssignableUserResponse> findAssignable() {
+		return userRepository.findByActiveTrueOrderByLastNameAscFirstNameAsc()
+			.stream()
+			.map(user -> new AssignableUserResponse(user.getId(), user.getFirstName(), user.getLastName(),
+					user.getRole()))
+			.toList();
+	}
+
 	public UserResponse getById(Long id) {
 		return UserResponse.from(findUser(id));
 	}
