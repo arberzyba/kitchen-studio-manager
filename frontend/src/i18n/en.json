@@ -322,5 +322,21 @@
     "confirmSend": "Send invoice {{number}} as a PDF to {{email}}?",
     "sentTo": "The invoice was sent to {{email}}.",
     "noEmail": "This customer has no email address, so the invoice cannot be sent by email."
+  },
+  "dashboard": {
+    "openQuotes": "Quotes awaiting an answer",
+    "openQuotesDetail": "{{amount}} in total · {{drafts}} more in draft",
+    "revenueThisMonth": "Revenue this month",
+    "revenueDetail": "Net amount invoiced",
+    "overduePayments": "Overdue payments",
+    "overdueDetail_one": "{{count}} overdue invoice",
+    "overdueDetail_other": "{{count}} overdue invoices",
+    "monthlyRevenue": "Revenue per month (net)",
+    "netRevenue": "Net revenue",
+    "upcomingInstallations": "Upcoming installations",
+    "noInstallations": "No installations planned",
+    "overdueInvoices": "Overdue invoices",
+    "noOverdue": "No overdue invoices",
+    "dueSince": "due since {{date}}"
   }
 }

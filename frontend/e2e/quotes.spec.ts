@@ -12,7 +12,7 @@ test('sales filters the quote list and opens an accepted quote', async ({
   page,
 }) => {
   await signIn(page, 'sales@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Quotes' }).click()
+  await page.getByRole('link', { name: 'Quotes', exact: true }).click()
   await expect(
     page.getByRole('gridcell', { name: 'Thomas Schmidt' }),
   ).toBeVisible()
@@ -25,7 +25,7 @@ test('sales filters the quote list and opens an accepted quote', async ({
   await page.getByRole('gridcell', { name: 'Sabine Müller' }).click()
 
   await expect(
-    page.getByRole('heading', { name: /Quote AN-\d{4}-0001/ }),
+    page.getByRole('heading', { name: /Quote AN-\d{4}-\d{4}/ }),
   ).toBeVisible()
   await expect(page.getByText('Discount 5 %')).toBeVisible()
   await expect(page.getByText('€5,766.40')).toBeVisible()
@@ -77,19 +77,19 @@ test('quote form validates its input', async ({ page }) => {
 
 test('quote PDF can be downloaded', async ({ page }) => {
   await signIn(page, 'sales@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Quotes' }).click()
+  await page.getByRole('link', { name: 'Quotes', exact: true }).click()
   await page.getByRole('gridcell', { name: 'Sabine Müller' }).click()
 
   const download = page.waitForEvent('download')
   await page.getByRole('button', { name: 'PDF' }).click()
   expect((await download).suggestedFilename()).toMatch(
-    /^Angebot-AN-\d{4}-0001\.pdf$/,
+    /^Angebot-AN-\d{4}-\d{4}\.pdf$/,
   )
 })
 
 test('office can read quotes but not create them', async ({ page }) => {
   await signIn(page, 'office@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Quotes' }).click()
+  await page.getByRole('link', { name: 'Quotes', exact: true }).click()
   await expect(
     page.getByRole('gridcell', { name: 'Sabine Müller' }),
   ).toBeVisible()

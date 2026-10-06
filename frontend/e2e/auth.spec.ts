@@ -23,7 +23,7 @@ test('admin signs in, sees the user list and signs out', async ({ page }) => {
     page.getByRole('heading', { name: 'Welcome, Anna' }),
   ).toBeVisible()
 
-  await page.getByRole('link', { name: 'Users' }).click()
+  await page.getByRole('link', { name: 'Users', exact: true }).click()
   await expect(
     page.getByRole('cell', { name: 'installer@sedzkitchens.de', exact: true }),
   ).toBeVisible()
@@ -38,7 +38,7 @@ test('admin signs in, sees the user list and signs out', async ({ page }) => {
 
 test('new user form validates its input', async ({ page }) => {
   await signIn(page, 'admin@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Users' }).click()
+  await page.getByRole('link', { name: 'Users', exact: true }).click()
   await page.getByRole('button', { name: 'New user' }).click()
   await page.getByRole('button', { name: 'Save' }).click()
 
@@ -51,7 +51,9 @@ test('installer has no access to user management', async ({ page }) => {
   await expect(
     page.getByRole('heading', { name: 'Welcome, Jonas' }),
   ).toBeVisible()
-  await expect(page.getByRole('link', { name: 'Users' })).toHaveCount(0)
+  await expect(
+    page.getByRole('link', { name: 'Users', exact: true }),
+  ).toHaveCount(0)
 
   await page.goto('/users')
   await expect(page).toHaveURL('/')

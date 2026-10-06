@@ -12,7 +12,7 @@ test('sales browses the catalog with search and category filter', async ({
   page,
 }) => {
   await signIn(page, 'sales@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Products' }).click()
+  await page.getByRole('link', { name: 'Products', exact: true }).click()
   await expect(page.getByRole('gridcell', { name: 'EG-BO-60' })).toBeVisible()
   await expect(
     page.getByRole('gridcell', { name: '€599.00 / pc' }),
@@ -42,7 +42,7 @@ test('prices use German formatting in German', async ({ page }) => {
 
 test('admin product form validates its input', async ({ page }) => {
   await signIn(page, 'admin@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Products' }).click()
+  await page.getByRole('link', { name: 'Products', exact: true }).click()
   await page.getByRole('button', { name: 'New product' }).click()
   await page.getByRole('button', { name: 'Save' }).click()
 
@@ -55,7 +55,7 @@ test('admin product form validates its input', async ({ page }) => {
 
 test('suppliers are listed and only admins can edit them', async ({ page }) => {
   await signIn(page, 'office@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Suppliers' }).click()
+  await page.getByRole('link', { name: 'Suppliers', exact: true }).click()
   await expect(
     page.getByRole('cell', { name: 'Westfalen Arbeitsplatten KG' }),
   ).toBeVisible()

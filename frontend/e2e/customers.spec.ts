@@ -12,7 +12,7 @@ test('sales searches customers and opens one with its contact history', async ({
   page,
 }) => {
   await signIn(page, 'sales@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Customers' }).click()
+  await page.getByRole('link', { name: 'Customers', exact: true }).click()
   await expect(
     page.getByRole('gridcell', { name: 'Müller, Sabine' }),
   ).toBeVisible()
@@ -46,7 +46,7 @@ test('customer form validates its input', async ({ page }) => {
 
 test('office can view customers but not edit them', async ({ page }) => {
   await signIn(page, 'office@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Customers' }).click()
+  await page.getByRole('link', { name: 'Customers', exact: true }).click()
   await expect(
     page.getByRole('gridcell', { name: 'Müller, Sabine' }),
   ).toBeVisible()
@@ -58,7 +58,9 @@ test('office can view customers but not edit them', async ({ page }) => {
 
 test('installer has no access to customers', async ({ page }) => {
   await signIn(page, 'installer@sedzkitchens.de')
-  await expect(page.getByRole('link', { name: 'Customers' })).toHaveCount(0)
+  await expect(
+    page.getByRole('link', { name: 'Customers', exact: true }),
+  ).toHaveCount(0)
 
   await page.goto('/customers')
   await expect(page).toHaveURL('/')
