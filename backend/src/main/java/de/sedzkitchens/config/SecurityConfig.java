@@ -54,8 +54,8 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	// Needed when the frontend is served from a different address than the API, as in production.
-	// In development the Vite dev server forwards API calls, so no origin has to be allowed.
+	// The browser loads the frontend from a different address than the API, in production and in development
+	// (the Vite dev server). Only the configured frontend addresses may call the API from a browser.
 	@Bean
 	CorsConfigurationSource corsConfigurationSource(
 			@Value("${app.cors.allowed-origins:}") List<String> allowedOrigins) {
