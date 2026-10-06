@@ -15,7 +15,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
-import { api, apiBlob } from '../api/client'
+import { api, downloadFile } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import { formatDate } from '../i18n/format'
 import { QuoteOrderAction } from '../orders/QuoteOrderAction'
@@ -49,15 +49,8 @@ export function QuoteDetailPage() {
     onSettled: () => setConfirmSend(false),
   })
   const downloadPdf = useMutation({
-    mutationFn: async (quoteNumber: string) => {
-      // The PDF needs the login token, so it is fetched here and then handed to the browser as a download
-      const url = URL.createObjectURL(await apiBlob(`/quotes/${id}/pdf`))
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `Angebot-${quoteNumber}.pdf`
-      link.click()
-      URL.revokeObjectURL(url)
-    },
+    mutationFn: (quoteNumber: string) =>
+      downloadFile(`/quotes/${id}/pdf`, `Angebot-${quoteNumber}.pdf`),
   })
 
   if (quote.isError) {

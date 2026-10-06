@@ -67,7 +67,14 @@ export async function api<T>(
   return response.status === 204 ? (undefined as T) : response.json()
 }
 
-// For file responses such as PDFs
-export async function apiBlob(path: string) {
-  return (await request(path, {})).blob()
+// Fetches a file such as a PDF and hands it to the browser as a download.
+// A plain link would not work because the request needs the login token.
+export async function downloadFile(path: string, fileName: string) {
+  const blob = await (await request(path, {})).blob()
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = fileName
+  link.click()
+  URL.revokeObjectURL(url)
 }

@@ -24,6 +24,9 @@ import de.sedzkitchens.customer.CustomerRepository;
 import de.sedzkitchens.customer.CustomerRequest;
 import de.sedzkitchens.customer.CustomerService;
 import de.sedzkitchens.customer.Salutation;
+import de.sedzkitchens.invoice.InvoiceRepository;
+import de.sedzkitchens.invoice.InvoiceRequests;
+import de.sedzkitchens.invoice.InvoiceService;
 import de.sedzkitchens.order.OrderRepository;
 import de.sedzkitchens.order.OrderService;
 import de.sedzkitchens.product.Product;
@@ -47,7 +50,8 @@ import de.sedzkitchens.user.UserRepository;
 import de.sedzkitchens.user.UserService;
 import lombok.RequiredArgsConstructor;
 
-// Fills an empty dev database with demo data: one login per role, customers, suppliers, products, quotes, an order, its appointments and supplier orders.
+// Fills an empty dev database with demo data: one login per role, customers, suppliers, products, quotes, an order, its appointments,
+// supplier orders and invoice.
 @Component
 @Profile("dev")
 @RequiredArgsConstructor
@@ -85,6 +89,10 @@ public class DemoDataSeeder implements ApplicationRunner {
 
 	private final SupplierOrderService supplierOrderService;
 
+	private final InvoiceRepository invoiceRepository;
+
+	private final InvoiceService invoiceService;
+
 	@Override
 	public void run(ApplicationArguments args) {
 		if (userRepository.count() == 0) {
@@ -111,6 +119,20 @@ public class DemoDataSeeder implements ApplicationRunner {
 		if (supplierOrderRepository.count() == 0) {
 			seedSupplierOrders();
 		}
+		if (invoiceRepository.count() == 0) {
+			seedInvoice();
+		}
+	}
+
+	// Invoices the demo order and records a deposit, leaving the rest open
+	private void seedInvoice() {
+		orderRepository.findAll().stream().findFirst().ifPresent(order -> {
+			Long invoiceId = invoiceService
+				.create(new InvoiceRequests.Create(order.getId(), LocalDate.now(), LocalDate.now().plusDays(14)))
+				.id();
+			invoiceService.addPayment(invoiceId,
+					new InvoiceRequests.AddPayment(new BigDecimal("2000.00"), LocalDate.now(), "Anzahlung"));
+		});
 	}
 
 	// Orders the demo order's cabinets (due next week) and worktops (due later); the appliances are left to order

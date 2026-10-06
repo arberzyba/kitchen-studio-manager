@@ -5,6 +5,8 @@ import { CustomerDetailPage } from './customers/CustomerDetailPage'
 import { CustomerFormPage } from './customers/CustomerFormPage'
 import { CustomersPage } from './customers/CustomersPage'
 import { CalendarPage } from './calendar/CalendarPage'
+import { InvoiceDetailPage } from './invoices/InvoiceDetailPage'
+import { InvoicesPage } from './invoices/InvoicesPage'
 import { AppLayout } from './layout/AppLayout'
 import { OrderDetailPage } from './orders/OrderDetailPage'
 import { OrdersPage } from './orders/OrdersPage'
@@ -38,6 +40,8 @@ function App() {
               path="/supplier-orders/:id"
               element={<SupplierOrderDetailPage />}
             />
+            <Route path="/invoices" element={<InvoicesPage />} />
+            <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/suppliers" element={<SuppliersPage />} />
           </Route>

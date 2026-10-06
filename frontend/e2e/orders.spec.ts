@@ -21,7 +21,8 @@ test('order shows its progress, items and totals', async ({ page }) => {
     page.getByRole('button', { name: 'Mark as: Ordered from supplier' }),
   ).toBeVisible()
   await expect(page.getByRole('cell', { name: 'EG-IK-80' })).toBeVisible()
-  await expect(page.getByText('€6,862.02')).toBeVisible()
+  // The gross total appears in the invoice section and in the totals
+  await expect(page.getByText('€6,862.02').first()).toBeVisible()
   await expect(page.getByRole('link', { name: /AN-\d{4}-0001/ })).toBeVisible()
 })
 
