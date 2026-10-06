@@ -10,7 +10,7 @@ async function signIn(page: Page, email: string) {
 
 test('order shows its progress, items and totals', async ({ page }) => {
   await signIn(page, 'office@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Orders' }).click()
+  await page.getByRole('link', { name: 'Orders', exact: true }).click()
   await page.getByRole('gridcell', { name: 'Sabine Müller' }).click()
 
   await expect(
@@ -38,7 +38,7 @@ test('accepted quote links to its order', async ({ page }) => {
 
 test('order list can be filtered by status', async ({ page }) => {
   await signIn(page, 'sales@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Orders' }).click()
+  await page.getByRole('link', { name: 'Orders', exact: true }).click()
   await expect(
     page.getByRole('gridcell', { name: 'Sabine Müller' }),
   ).toBeVisible()
@@ -52,7 +52,9 @@ test('order list can be filtered by status', async ({ page }) => {
 
 test('installer has no access to orders', async ({ page }) => {
   await signIn(page, 'installer@sedzkitchens.de')
-  await expect(page.getByRole('link', { name: 'Orders' })).toHaveCount(0)
+  await expect(
+    page.getByRole('link', { name: 'Orders', exact: true }),
+  ).toHaveCount(0)
 
   await page.goto('/orders')
   await expect(page).toHaveURL('/')

@@ -13,6 +13,8 @@ import { ProductsPage } from './products/ProductsPage'
 import { QuoteDetailPage } from './quotes/QuoteDetailPage'
 import { QuoteFormPage } from './quotes/QuoteFormPage'
 import { QuotesPage } from './quotes/QuotesPage'
+import { SupplierOrderDetailPage } from './supplierorders/SupplierOrderDetailPage'
+import { SupplierOrdersPage } from './supplierorders/SupplierOrdersPage'
 import { SuppliersPage } from './suppliers/SuppliersPage'
 import { UsersPage } from './users/UsersPage'
 
@@ -31,6 +33,11 @@ function App() {
             <Route path="/quotes/:id" element={<QuoteDetailPage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/orders/:id" element={<OrderDetailPage />} />
+            <Route path="/supplier-orders" element={<SupplierOrdersPage />} />
+            <Route
+              path="/supplier-orders/:id"
+              element={<SupplierOrderDetailPage />}
+            />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/suppliers" element={<SuppliersPage />} />
           </Route>

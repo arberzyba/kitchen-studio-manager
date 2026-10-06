@@ -22,6 +22,7 @@
     "quotes": "Quotes",
     "orders": "Orders",
     "calendar": "Calendar",
+    "supplierOrders": "Supplier orders",
     "products": "Products",
     "suppliers": "Suppliers",
     "users": "Users",
@@ -247,5 +248,38 @@
     "timeRequired": "Choose a date and time",
     "assigneeRequired": "Choose an employee",
     "endBeforeStart": "The end must be after the start"
+  },
+  "supplierOrderStatuses": {
+    "ORDERED": "Ordered",
+    "DELIVERED": "Delivered"
+  },
+  "supplierOrders": {
+    "title": "Supplier orders",
+    "heading": "Supplier order {{number}}",
+    "search": "Search number, supplier, order or customer",
+    "allStatuses": "All statuses",
+    "number": "Number",
+    "supplier": "Supplier",
+    "forOrder": "For order",
+    "ordered": "Ordered on",
+    "expected": "Expected delivery",
+    "delivered": "Delivered on",
+    "status": "Status",
+    "total": "Purchase value (net)",
+    "overdue": "Overdue",
+    "notes": "Notes",
+    "changeExpected": "Change expected delivery",
+    "recordDelivery": "Record delivery",
+    "deliveredOn": "Delivered on",
+    "markDelivered": "Mark as delivered",
+    "expectedAt": "expected {{date}}",
+    "deliveredAt": "delivered {{date}}",
+    "itemsToOrder_one": "{{count}} item to order",
+    "itemsToOrder_other": "{{count}} items to order",
+    "orderNow": "Order",
+    "orderFrom": "Order from {{name}}",
+    "orderExplanation_one": "This orders the {{count}} item of this customer order that comes from this supplier.",
+    "orderExplanation_other": "This orders the {{count}} items of this customer order that come from this supplier.",
+    "placeOrder": "Place order"
   }
 }

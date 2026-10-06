@@ -22,6 +22,7 @@
     "quotes": "Angebote",
     "orders": "Aufträge",
     "calendar": "Kalender",
+    "supplierOrders": "Bestellungen",
     "products": "Produkte",
     "suppliers": "Lieferanten",
     "users": "Benutzer",
@@ -247,5 +248,38 @@
     "timeRequired": "Wählen Sie Datum und Uhrzeit",
     "assigneeRequired": "Wählen Sie einen Mitarbeiter",
     "endBeforeStart": "Das Ende muss nach dem Beginn liegen"
+  },
+  "supplierOrderStatuses": {
+    "ORDERED": "Bestellt",
+    "DELIVERED": "Geliefert"
+  },
+  "supplierOrders": {
+    "title": "Lieferantenbestellungen",
+    "heading": "Bestellung {{number}}",
+    "search": "Nummer, Lieferant, Auftrag oder Kunde suchen",
+    "allStatuses": "Alle Status",
+    "number": "Nummer",
+    "supplier": "Lieferant",
+    "forOrder": "Für Auftrag",
+    "ordered": "Bestellt am",
+    "expected": "Voraussichtliche Lieferung",
+    "delivered": "Geliefert am",
+    "status": "Status",
+    "total": "Einkaufswert (netto)",
+    "overdue": "Überfällig",
+    "notes": "Anmerkungen",
+    "changeExpected": "Liefertermin ändern",
+    "recordDelivery": "Lieferung erfassen",
+    "deliveredOn": "Geliefert am",
+    "markDelivered": "Als geliefert markieren",
+    "expectedAt": "erwartet am {{date}}",
+    "deliveredAt": "geliefert am {{date}}",
+    "itemsToOrder_one": "{{count}} Position zu bestellen",
+    "itemsToOrder_other": "{{count}} Positionen zu bestellen",
+    "orderNow": "Bestellen",
+    "orderFrom": "Bei {{name}} bestellen",
+    "orderExplanation_one": "Bestellt wird die {{count}} Position dieses Auftrags, die von diesem Lieferanten kommt.",
+    "orderExplanation_other": "Bestellt werden die {{count}} Positionen dieses Auftrags, die von diesem Lieferanten kommen.",
+    "placeOrder": "Bestellung aufgeben"
   }
 }
