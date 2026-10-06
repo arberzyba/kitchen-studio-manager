@@ -2,6 +2,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment'
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import ContactsIcon from '@mui/icons-material/Contacts'
 import DescriptionIcon from '@mui/icons-material/Description'
+import HistoryIcon from '@mui/icons-material/History'
 import HomeIcon from '@mui/icons-material/Home'
 import InventoryIcon from '@mui/icons-material/Inventory2'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
@@ -83,6 +84,12 @@ const NAV_ITEMS: {
     to: '/users',
     labelKey: 'nav.users',
     icon: <PeopleIcon />,
+    roles: ['ADMIN'],
+  },
+  {
+    to: '/audit-log',
+    labelKey: 'nav.auditLog',
+    icon: <HistoryIcon />,
     roles: ['ADMIN'],
   },
 ]

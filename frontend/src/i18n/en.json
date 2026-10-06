@@ -27,6 +27,7 @@
     "products": "Products",
     "suppliers": "Suppliers",
     "users": "Users",
+    "auditLog": "Audit log",
     "signOut": "Sign out"
   },
   "home": {
@@ -338,5 +339,47 @@
     "overdueInvoices": "Overdue invoices",
     "noOverdue": "No overdue invoices",
     "dueSince": "due since {{date}}"
+  },
+  "auditActions": {
+    "CREATE": "Created",
+    "UPDATE": "Changed",
+    "DELETE": "Deleted",
+    "EXPORT": "Data exported",
+    "ANONYMIZE": "Data erased"
+  },
+  "auditEntities": {
+    "Customer": "Customer",
+    "CustomerContact": "Contact entry",
+    "Quote": "Quote",
+    "SalesOrder": "Order",
+    "Appointment": "Appointment",
+    "SupplierOrder": "Supplier order",
+    "Invoice": "Invoice",
+    "Payment": "Payment",
+    "Product": "Product",
+    "Supplier": "Supplier",
+    "User": "User"
+  },
+  "audit": {
+    "title": "Audit log",
+    "explanation": "Who created, changed or deleted which record. Only the names of changed fields are kept, never their contents.",
+    "time": "Time",
+    "user": "User",
+    "system": "System",
+    "action": "Action",
+    "record": "Record",
+    "changedFields": "Changed fields",
+    "allActions": "All actions",
+    "allRecords": "All records"
+  },
+  "privacy": {
+    "title": "Data protection (GDPR)",
+    "explanation": "For requests from the customer: a copy of everything stored about them, or the erasure of their data.",
+    "export": "Export data",
+    "erase": "Erase data",
+    "confirmTitle": "Erase the data of {{name}}?",
+    "confirmText": "This cannot be undone. Name, contact details, addresses and contact history are removed. If quotes, orders or invoices exist, they are kept for the legal retention period and the customer is anonymized; otherwise the customer is deleted completely.",
+    "confirmButton": "Erase permanently",
+    "anonymizedNotice": "This customer's personal data was erased on request. Their business documents are kept for the legal retention period."
   }
 }

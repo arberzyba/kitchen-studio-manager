@@ -15,6 +15,7 @@ import { Link, useParams } from 'react-router'
 import { api } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
 import { formatDateTime } from '../i18n/format'
+import { CustomerPrivacy } from './CustomerPrivacy'
 import { canEditCustomers } from './permissions'
 import {
   CONTACT_TYPES,
@@ -51,7 +52,7 @@ export function CustomerDetailPage() {
           {salutation !== 'NONE' && `${t(`salutations.${salutation}`)} `}
           {firstName} {lastName}
         </Typography>
-        {canEditCustomers(user) && (
+        {canEditCustomers(user) && !customer.data.anonymized && (
           <Button
             variant="outlined"
             startIcon={<EditIcon />}
@@ -62,6 +63,10 @@ export function CustomerDetailPage() {
           </Button>
         )}
       </Stack>
+
+      {customer.data.anonymized && (
+        <Alert severity="info">{t('privacy.anonymizedNotice')}</Alert>
+      )}
 
       <Paper sx={{ p: 3 }}>
         <Stack spacing={1.5}>
@@ -81,7 +86,15 @@ export function CustomerDetailPage() {
         </Stack>
       </Paper>
 
-      <ContactHistory customerId={customer.data.id} />
+      {/* Erasing a customer's data removes the contact history and blocks new entries */}
+      {!customer.data.anonymized && (
+        <ContactHistory customerId={customer.data.id} />
+      )}
+
+      {/* Mirrors the backend rule: GDPR requests are handled by admins only */}
+      {user?.role === 'ADMIN' && !customer.data.anonymized && (
+        <CustomerPrivacy customer={customer.data} />
+      )}
     </Stack>
   )
 }

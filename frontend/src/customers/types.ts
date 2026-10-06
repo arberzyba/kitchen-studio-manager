@@ -18,6 +18,8 @@ export type Customer = {
   phone: string | null
   billingAddress: Address
   installationAddress: Address | null
+  // True once the personal data was erased on request; only placeholders remain
+  anonymized: boolean
 }
 
 export type Contact = {

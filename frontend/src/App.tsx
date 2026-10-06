@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router'
+import { AuditLogPage } from './audit/AuditLogPage'
 import { LoginPage } from './auth/LoginPage'
 import { RequireAuth } from './auth/RequireAuth'
 import { CustomerDetailPage } from './customers/CustomerDetailPage'
@@ -53,6 +54,7 @@ function App() {
           </Route>
           <Route element={<RequireAuth roles={['ADMIN']} />}>
             <Route path="/users" element={<UsersPage />} />
+            <Route path="/audit-log" element={<AuditLogPage />} />
           </Route>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

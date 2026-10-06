@@ -27,6 +27,7 @@
     "products": "Produkte",
     "suppliers": "Lieferanten",
     "users": "Benutzer",
+    "auditLog": "Änderungsprotokoll",
     "signOut": "Abmelden"
   },
   "home": {
@@ -338,5 +339,47 @@
     "overdueInvoices": "Überfällige Rechnungen",
     "noOverdue": "Keine überfälligen Rechnungen",
     "dueSince": "fällig seit {{date}}"
+  },
+  "auditActions": {
+    "CREATE": "Angelegt",
+    "UPDATE": "Geändert",
+    "DELETE": "Gelöscht",
+    "EXPORT": "Daten exportiert",
+    "ANONYMIZE": "Daten gelöscht"
+  },
+  "auditEntities": {
+    "Customer": "Kunde",
+    "CustomerContact": "Kontakteintrag",
+    "Quote": "Angebot",
+    "SalesOrder": "Auftrag",
+    "Appointment": "Termin",
+    "SupplierOrder": "Bestellung",
+    "Invoice": "Rechnung",
+    "Payment": "Zahlung",
+    "Product": "Produkt",
+    "Supplier": "Lieferant",
+    "User": "Benutzer"
+  },
+  "audit": {
+    "title": "Änderungsprotokoll",
+    "explanation": "Wer welchen Datensatz angelegt, geändert oder gelöscht hat. Gespeichert werden nur die Namen der geänderten Felder, nie deren Inhalte.",
+    "time": "Zeitpunkt",
+    "user": "Benutzer",
+    "system": "System",
+    "action": "Aktion",
+    "record": "Datensatz",
+    "changedFields": "Geänderte Felder",
+    "allActions": "Alle Aktionen",
+    "allRecords": "Alle Datensätze"
+  },
+  "privacy": {
+    "title": "Datenschutz (DSGVO)",
+    "explanation": "Für Anfragen des Kunden: eine Kopie aller über ihn gespeicherten Daten oder die Löschung seiner Daten.",
+    "export": "Daten exportieren",
+    "erase": "Daten löschen",
+    "confirmTitle": "Daten von {{name}} löschen?",
+    "confirmText": "Dies kann nicht rückgängig gemacht werden. Name, Kontaktdaten, Adressen und Kontakthistorie werden entfernt. Liegen Angebote, Aufträge oder Rechnungen vor, bleiben diese für die gesetzliche Aufbewahrungsfrist erhalten und der Kunde wird anonymisiert; andernfalls wird der Kunde vollständig gelöscht.",
+    "confirmButton": "Endgültig löschen",
+    "anonymizedNotice": "Die personenbezogenen Daten dieses Kunden wurden auf Anfrage gelöscht. Die Geschäftsunterlagen bleiben für die gesetzliche Aufbewahrungsfrist erhalten."
   }
 }
