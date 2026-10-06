@@ -13,6 +13,7 @@ import { Link, useParams } from 'react-router'
 import { api } from '../api/client'
 import { formatDate } from '../i18n/format'
 import { QuoteItemsCard } from '../quotes/QuoteParts'
+import { OrderSupplierOrders } from '../supplierorders/OrderSupplierOrders'
 import { ORDER_STATUSES, type Order } from './types'
 
 export function OrderDetailPage() {
@@ -95,6 +96,8 @@ export function OrderDetailPage() {
           </Detail>
         </Stack>
       </Paper>
+
+      <OrderSupplierOrders orderId={order.data.id} />
 
       <QuoteItemsCard quote={quote} />
     </Stack>

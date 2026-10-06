@@ -7,6 +7,7 @@ import InventoryIcon from '@mui/icons-material/Inventory2'
 import LocalShippingIcon from '@mui/icons-material/LocalShipping'
 import LogoutIcon from '@mui/icons-material/Logout'
 import PeopleIcon from '@mui/icons-material/People'
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -53,6 +54,12 @@ const NAV_ITEMS: {
     roles: ['ADMIN', 'SALES', 'OFFICE'],
   },
   { to: '/calendar', labelKey: 'nav.calendar', icon: <CalendarMonthIcon /> },
+  {
+    to: '/supplier-orders',
+    labelKey: 'nav.supplierOrders',
+    icon: <ShoppingCartIcon />,
+    roles: ['ADMIN', 'SALES', 'OFFICE'],
+  },
   {
     to: '/products',
     labelKey: 'nav.products',
