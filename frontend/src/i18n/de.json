@@ -19,6 +19,7 @@
     "home": "Start",
     "customers": "Kunden",
     "quotes": "Angebote",
+    "orders": "Aufträge",
     "products": "Produkte",
     "suppliers": "Lieferanten",
     "users": "Benutzer",
@@ -195,5 +196,28 @@
     "quantityInvalid": "Geben Sie eine Menge über 0 ein",
     "priceInvalid": "Geben Sie einen Preis ab 0 ein",
     "percentInvalid": "Geben Sie 0 bis 100 ein"
+  },
+  "orderStatuses": {
+    "NEW": "Neu",
+    "MEASURED": "Aufmaß erfolgt",
+    "ORDERED_FROM_SUPPLIER": "Beim Lieferanten bestellt",
+    "DELIVERED": "Geliefert",
+    "INSTALLED": "Montiert",
+    "COMPLETED": "Abgeschlossen"
+  },
+  "orders": {
+    "title": "Aufträge",
+    "heading": "Auftrag {{number}}",
+    "search": "Nummer oder Kunde suchen",
+    "allStatuses": "Alle Status",
+    "number": "Nummer",
+    "customer": "Kunde",
+    "date": "Auftragsdatum",
+    "status": "Status",
+    "quote": "Angebot",
+    "createdBy": "Erstellt von",
+    "create": "Auftrag anlegen",
+    "view": "Auftrag {{number}} anzeigen",
+    "advanceTo": "Markieren als: {{status}}"
   }
 }

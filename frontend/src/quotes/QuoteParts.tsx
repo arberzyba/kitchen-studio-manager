@@ -1,9 +1,16 @@
 import Chip from '@mui/material/Chip'
+import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useTranslation } from 'react-i18next'
 import { formatCurrency, formatNumber } from '../i18n/format'
-import type { QuoteStatus } from './types'
+import type { Quote, QuoteStatus } from './types'
 
 const STATUS_COLORS = {
   DRAFT: 'default',
@@ -23,7 +30,7 @@ export function QuoteStatusChip({ status }: { status: QuoteStatus }) {
   )
 }
 
-// Net / VAT / gross breakdown, shared by the editor (live preview) and the detail page
+// Net / VAT / gross breakdown, shared by the editor (live preview) and the read-only views
 export function QuoteTotals({
   totals,
   discountPercent,
@@ -86,5 +93,62 @@ export function QuoteTotals({
         </Typography>
       </Stack>
     </Stack>
+  )
+}
+
+// Read-only items, totals and notes of a quote; also shown on the order created from it
+export function QuoteItemsCard({ quote }: { quote: Quote }) {
+  const { t } = useTranslation()
+  return (
+    <Paper sx={{ p: 3 }}>
+      <TableContainer>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>{t('quotes.articleNumber')}</TableCell>
+              <TableCell>{t('quotes.product')}</TableCell>
+              <TableCell align="right">{t('quotes.quantity')}</TableCell>
+              <TableCell align="right">{t('quotes.unitPrice')}</TableCell>
+              <TableCell align="right">{t('quotes.discount')}</TableCell>
+              <TableCell align="right">{t('quotes.lineTotal')}</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {quote.items.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>{item.sku}</TableCell>
+                <TableCell>{item.description}</TableCell>
+                <TableCell align="right">
+                  {formatNumber(item.quantity)}{' '}
+                  {t(`productUnitsShort.${item.unit}`)}
+                </TableCell>
+                <TableCell align="right">
+                  {formatCurrency(item.unitPrice)}
+                </TableCell>
+                <TableCell align="right">
+                  {item.discountPercent > 0 &&
+                    `${formatNumber(item.discountPercent)} %`}
+                </TableCell>
+                <TableCell align="right">
+                  {formatCurrency(item.lineTotal)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Stack sx={{ mt: 2 }}>
+        <QuoteTotals
+          totals={quote}
+          discountPercent={quote.discountPercent}
+          vatRate={quote.vatRate}
+        />
+      </Stack>
+      {quote.notes && (
+        <Typography sx={{ mt: 2, whiteSpace: 'pre-wrap' }}>
+          {quote.notes}
+        </Typography>
+      )}
+    </Paper>
   )
 }

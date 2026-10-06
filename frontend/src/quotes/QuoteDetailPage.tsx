@@ -10,12 +10,6 @@ import DialogContentText from '@mui/material/DialogContentText'
 import DialogTitle from '@mui/material/DialogTitle'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -23,8 +17,9 @@ import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import { api, apiBlob } from '../api/client'
 import { useAuth } from '../auth/AuthContext'
-import { formatCurrency, formatDate, formatNumber } from '../i18n/format'
-import { QuoteStatusChip, QuoteTotals } from './QuoteParts'
+import { formatDate } from '../i18n/format'
+import { QuoteOrderAction } from '../orders/QuoteOrderAction'
+import { QuoteItemsCard, QuoteStatusChip } from './QuoteParts'
 import { canEditQuotes, type Quote, type QuoteStatus } from './types'
 
 export function QuoteDetailPage() {
@@ -151,56 +146,9 @@ export function QuoteDetailPage() {
         </Stack>
       </Paper>
 
-      <Paper sx={{ p: 3 }}>
-        <TableContainer>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell>{t('quotes.articleNumber')}</TableCell>
-                <TableCell>{t('quotes.product')}</TableCell>
-                <TableCell align="right">{t('quotes.quantity')}</TableCell>
-                <TableCell align="right">{t('quotes.unitPrice')}</TableCell>
-                <TableCell align="right">{t('quotes.discount')}</TableCell>
-                <TableCell align="right">{t('quotes.lineTotal')}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {quote.data.items.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell>{item.sku}</TableCell>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell align="right">
-                    {formatNumber(item.quantity)}{' '}
-                    {t(`productUnitsShort.${item.unit}`)}
-                  </TableCell>
-                  <TableCell align="right">
-                    {formatCurrency(item.unitPrice)}
-                  </TableCell>
-                  <TableCell align="right">
-                    {item.discountPercent > 0 &&
-                      `${formatNumber(item.discountPercent)} %`}
-                  </TableCell>
-                  <TableCell align="right">
-                    {formatCurrency(item.lineTotal)}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <Stack sx={{ mt: 2 }}>
-          <QuoteTotals
-            totals={quote.data}
-            discountPercent={quote.data.discountPercent}
-            vatRate={quote.data.vatRate}
-          />
-        </Stack>
-        {quote.data.notes && (
-          <Typography sx={{ mt: 2, whiteSpace: 'pre-wrap' }}>
-            {quote.data.notes}
-          </Typography>
-        )}
-      </Paper>
+      <QuoteItemsCard quote={quote.data} />
+
+      {status === 'ACCEPTED' && <QuoteOrderAction quoteId={quote.data.id} />}
 
       {canEdit && (status === 'DRAFT' || status === 'SENT') && (
         <Stack direction="row" spacing={1} sx={{ justifyContent: 'flex-end' }}>

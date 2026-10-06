@@ -5,6 +5,8 @@ import { CustomerDetailPage } from './customers/CustomerDetailPage'
 import { CustomerFormPage } from './customers/CustomerFormPage'
 import { CustomersPage } from './customers/CustomersPage'
 import { AppLayout } from './layout/AppLayout'
+import { OrderDetailPage } from './orders/OrderDetailPage'
+import { OrdersPage } from './orders/OrdersPage'
 import { HomePage } from './pages/HomePage'
 import { ProductsPage } from './products/ProductsPage'
 import { QuoteDetailPage } from './quotes/QuoteDetailPage'
@@ -25,6 +27,8 @@ function App() {
             <Route path="/customers/:id" element={<CustomerDetailPage />} />
             <Route path="/quotes" element={<QuotesPage />} />
             <Route path="/quotes/:id" element={<QuoteDetailPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/orders/:id" element={<OrderDetailPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/suppliers" element={<SuppliersPage />} />
           </Route>

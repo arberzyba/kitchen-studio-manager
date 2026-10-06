@@ -1,3 +1,4 @@
+import AssignmentIcon from '@mui/icons-material/Assignment'
 import ContactsIcon from '@mui/icons-material/Contacts'
 import DescriptionIcon from '@mui/icons-material/Description'
 import HomeIcon from '@mui/icons-material/Home'
@@ -42,6 +43,12 @@ const NAV_ITEMS: {
     to: '/quotes',
     labelKey: 'nav.quotes',
     icon: <DescriptionIcon />,
+    roles: ['ADMIN', 'SALES', 'OFFICE'],
+  },
+  {
+    to: '/orders',
+    labelKey: 'nav.orders',
+    icon: <AssignmentIcon />,
     roles: ['ADMIN', 'SALES', 'OFFICE'],
   },
   {

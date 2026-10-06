@@ -18,6 +18,8 @@ import de.sedzkitchens.customer.CustomerRepository;
 import de.sedzkitchens.customer.CustomerRequest;
 import de.sedzkitchens.customer.CustomerService;
 import de.sedzkitchens.customer.Salutation;
+import de.sedzkitchens.order.OrderRepository;
+import de.sedzkitchens.order.OrderService;
 import de.sedzkitchens.product.Product;
 import de.sedzkitchens.product.ProductCategory;
 import de.sedzkitchens.product.ProductRepository;
@@ -36,7 +38,7 @@ import de.sedzkitchens.user.UserRepository;
 import de.sedzkitchens.user.UserService;
 import lombok.RequiredArgsConstructor;
 
-// Fills an empty dev database with demo data: one login per role, customers, suppliers, products and quotes.
+// Fills an empty dev database with demo data: one login per role, customers, suppliers, products, quotes and an order.
 @Component
 @Profile("dev")
 @RequiredArgsConstructor
@@ -62,6 +64,10 @@ public class DemoDataSeeder implements ApplicationRunner {
 
 	private final QuoteService quoteService;
 
+	private final OrderRepository orderRepository;
+
+	private final OrderService orderService;
+
 	@Override
 	public void run(ApplicationArguments args) {
 		if (userRepository.count() == 0) {
@@ -79,6 +85,19 @@ public class DemoDataSeeder implements ApplicationRunner {
 		if (quoteRepository.count() == 0) {
 			seedQuotes();
 		}
+		if (orderRepository.count() == 0) {
+			seedOrder();
+		}
+	}
+
+	// Turns the accepted demo quote into an order that has already been measured
+	private void seedOrder() {
+		Long salesId = userRepository.findByEmail("sales@sedzkitchens.de").orElseThrow().getId();
+		quoteRepository.findAll()
+			.stream()
+			.filter(quote -> quote.getStatus() == QuoteStatus.ACCEPTED)
+			.findFirst()
+			.ifPresent(quote -> orderService.advance(orderService.createFromQuote(quote.getId(), salesId).id()));
 	}
 
 	// One quote in each stage: accepted, sent and still a draft
