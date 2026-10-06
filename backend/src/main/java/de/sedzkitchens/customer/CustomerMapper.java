@@ -7,12 +7,14 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface CustomerMapper {
 
+	@Mapping(target = "anonymized", expression = "java(customer.getAnonymizedAt() != null)")
 	CustomerResponse toResponse(Customer customer);
 
 	// Copies the request onto a new or existing customer; id and timestamps stay under the database's control
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
+	@Mapping(target = "anonymizedAt", ignore = true)
 	void update(@MappingTarget Customer customer, CustomerRequest request);
 
 	@Mapping(target = "createdByName",

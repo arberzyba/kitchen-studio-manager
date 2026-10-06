@@ -1,5 +1,7 @@
 package de.sedzkitchens.order;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -23,5 +25,7 @@ public interface OrderRepository extends JpaRepository<SalesOrder, Long> {
 			@Param("quoteId") Long quoteId, Pageable pageable);
 
 	boolean existsByQuoteId(Long quoteId);
+
+	List<SalesOrder> findByQuoteCustomerId(Long customerId);
 
 }

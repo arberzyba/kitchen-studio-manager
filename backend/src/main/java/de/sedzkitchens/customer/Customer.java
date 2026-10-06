@@ -59,6 +59,9 @@ public class Customer {
 	@UpdateTimestamp
 	private Instant updatedAt;
 
+	// Set when the personal data was erased on request while the customer's business documents were kept
+	private Instant anonymizedAt;
+
 	public String getDisplayName() {
 		return firstName + " " + lastName;
 	}
