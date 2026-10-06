@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import de.sedzkitchens.common.ConflictException;
 import de.sedzkitchens.common.DocumentNumberService;
 import de.sedzkitchens.common.NotFoundException;
+import de.sedzkitchens.customer.Customer;
 import de.sedzkitchens.customer.CustomerRepository;
 import de.sedzkitchens.product.Product;
 import de.sedzkitchens.product.ProductRepository;
@@ -99,8 +100,12 @@ public class QuoteService {
 	}
 
 	private void apply(Quote quote, QuoteRequest request) {
-		quote.setCustomer(customerRepository.findById(request.customerId())
-			.orElseThrow(() -> new NotFoundException("Customer not found")));
+		Customer customer = customerRepository.findById(request.customerId())
+			.orElseThrow(() -> new NotFoundException("Customer not found"));
+		if (customer.getAnonymizedAt() != null) {
+			throw new ConflictException("This customer's data has been erased");
+		}
+		quote.setCustomer(customer);
 		quote.setValidUntil(request.validUntil());
 		quote.setDiscountPercent(request.discountPercent());
 		quote.setNotes(request.notes());

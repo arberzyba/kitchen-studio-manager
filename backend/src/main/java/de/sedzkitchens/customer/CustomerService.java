@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import de.sedzkitchens.common.ConflictException;
 import de.sedzkitchens.common.NotFoundException;
 import de.sedzkitchens.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class CustomerService {
 
 	@Transactional
 	public CustomerResponse update(Long id, CustomerRequest request) {
-		Customer customer = findCustomer(id);
+		Customer customer = findActiveCustomer(id);
 		mapper.update(customer, request);
 		// Flush so the response carries the new updatedAt timestamp
 		return mapper.toResponse(customerRepository.saveAndFlush(customer));
@@ -59,11 +60,20 @@ public class CustomerService {
 	@Transactional
 	public ContactResponse addContact(Long customerId, ContactRequest request, Long userId) {
 		CustomerContact contact = new CustomerContact();
-		contact.setCustomer(findCustomer(customerId));
+		contact.setCustomer(findActiveCustomer(customerId));
 		contact.setContactType(request.contactType());
 		contact.setSummary(request.summary());
 		contact.setCreatedBy(userRepository.getReferenceById(userId));
 		return mapper.toResponse(contactRepository.save(contact));
+	}
+
+	// For changes: a customer whose data was erased must not collect new personal data
+	private Customer findActiveCustomer(Long id) {
+		Customer customer = findCustomer(id);
+		if (customer.getAnonymizedAt() != null) {
+			throw new ConflictException("This customer's data has been erased");
+		}
+		return customer;
 	}
 
 	private Customer findCustomer(Long id) {

@@ -35,6 +35,8 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
 
 	List<Invoice> findByInvoiceDateGreaterThanEqual(LocalDate from);
 
+	List<Invoice> findBySalesOrderQuoteCustomerId(Long customerId);
+
 	// What is still owed on invoices that are not fully paid and were due before the given day
 	@Query("""
 			select coalesce(sum(i.grossTotal - i.paidTotal), 0) from Invoice i

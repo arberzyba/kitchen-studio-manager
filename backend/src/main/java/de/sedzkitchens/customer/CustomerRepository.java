@@ -8,13 +8,14 @@ import org.springframework.data.repository.query.Param;
 
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-	// Expects a lower-case LIKE pattern such as "%schmidt%"
+	// Expects a lower-case LIKE pattern such as "%schmidt%". Customers whose data was erased are left out.
 	@Query("""
 			select c from Customer c
-			where lower(concat(c.firstName, ' ', c.lastName)) like :pattern
-			   or lower(c.companyName) like :pattern
-			   or lower(c.email) like :pattern
-			   or lower(c.billingAddress.city) like :pattern
+			where c.anonymizedAt is null
+			  and (lower(concat(c.firstName, ' ', c.lastName)) like :pattern
+			    or lower(c.companyName) like :pattern
+			    or lower(c.email) like :pattern
+			    or lower(c.billingAddress.city) like :pattern)
 			""")
 	Page<Customer> search(@Param("pattern") String pattern, Pageable pageable);
 

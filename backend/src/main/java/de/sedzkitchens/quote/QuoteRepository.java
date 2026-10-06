@@ -23,6 +23,8 @@ public interface QuoteRepository extends JpaRepository<Quote, Long> {
 			""")
 	Page<Quote> search(@Param("pattern") String pattern, @Param("status") QuoteStatus status, Pageable pageable);
 
+	List<Quote> findByCustomerId(Long customerId);
+
 	// Number of quotes and their combined gross value per status, for the dashboard
 	@Query("""
 			select q.status as status, count(q) as count, coalesce(sum(q.grossTotal), 0) as grossTotal
