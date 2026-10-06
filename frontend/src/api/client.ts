@@ -44,6 +44,12 @@ async function request(path: string, options: RequestOptions) {
     },
     body: options.body !== undefined ? JSON.stringify(options.body) : undefined,
   })
+  if (response.status === 401 && token) {
+    // The stored token was rejected, so the session has expired. Forget it and start again at the
+    // login page; otherwise the dead token would be sent with every request, including the next login.
+    setToken(null)
+    window.location.assign('/login')
+  }
   if (!response.ok) {
     // The backend answers errors as problem details with a human-readable "detail"
     const problem = await response.json().catch(() => null)
