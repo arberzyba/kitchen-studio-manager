@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+# A newer push to the same branch makes the older run pointless
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend build and tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+      # Compiles, runs the tests on an in-memory database and checks the code style
+      - run: ./mvnw -B verify
+
+  frontend:
+    name: Frontend checks and build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npx prettier --check .
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    # The same database the backend uses in local development; it starts empty and is seeded with demo data
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: sedzkitchens
+          POSTGRES_USER: sedzkitchens
+          POSTGRES_PASSWORD: sedzkitchens
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sedzkitchens"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build and start the backend
+        working-directory: backend
+        run: |
+          ./mvnw -B -DskipTests -Dspotless.check.skip=true package
+          java -jar target/backend-0.0.1-SNAPSHOT.jar > backend.log 2>&1 &
+          for attempt in $(seq 1 60); do
+            if curl -sf http://localhost:8080/api/health > /dev/null; then
+              echo "Backend is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Backend did not start"
+          cat backend.log
+          exit 1
+
+      - name: Install frontend and test browser
+        working-directory: frontend
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      # Playwright starts the Vite dev server itself
+      - name: Run browser tests
+        working-directory: frontend
+        run: npx playwright test
+
+      - name: Keep the test report and backend log if something failed
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-failure
+          path: |
+            frontend/playwright-report
+            backend/backend.log
