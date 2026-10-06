@@ -2,7 +2,8 @@
   "common": {
     "save": "Speichern",
     "cancel": "Abbrechen",
-    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "close": "Schließen"
   },
   "language": {
     "switchTo": "English"
@@ -20,6 +21,7 @@
     "customers": "Kunden",
     "quotes": "Angebote",
     "orders": "Aufträge",
+    "calendar": "Kalender",
     "products": "Produkte",
     "suppliers": "Lieferanten",
     "users": "Benutzer",
@@ -219,5 +221,31 @@
     "create": "Auftrag anlegen",
     "view": "Auftrag {{number}} anzeigen",
     "advanceTo": "Markieren als: {{status}}"
+  },
+  "appointmentTypes": {
+    "MEASUREMENT": "Aufmaß",
+    "DELIVERY": "Lieferung",
+    "INSTALLATION": "Montage"
+  },
+  "calendar": {
+    "title": "Kalender",
+    "myJobs": "Meine Termine",
+    "new": "Neuer Termin",
+    "edit": "Termin bearbeiten",
+    "order": "Auftrag",
+    "type": "Art",
+    "start": "Beginn",
+    "end": "Ende",
+    "time": "Zeit",
+    "assignee": "Zugewiesen an",
+    "notes": "Anmerkungen",
+    "customer": "Kunde",
+    "address": "Adresse",
+    "delete": "Löschen",
+    "confirmDelete": "Wirklich löschen",
+    "orderRequired": "Wählen Sie einen Auftrag",
+    "timeRequired": "Wählen Sie Datum und Uhrzeit",
+    "assigneeRequired": "Wählen Sie einen Mitarbeiter",
+    "endBeforeStart": "Das Ende muss nach dem Beginn liegen"
   }
 }

@@ -56,7 +56,9 @@ export async function api<T>(
   path: string,
   options: RequestOptions = {},
 ): Promise<T> {
-  return (await request(path, options)).json()
+  const response = await request(path, options)
+  // 204 No Content (e.g. after a delete) has no body to parse
+  return response.status === 204 ? (undefined as T) : response.json()
 }
 
 // For file responses such as PDFs
