@@ -2,7 +2,8 @@
   "common": {
     "save": "Save",
     "cancel": "Cancel",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "close": "Close"
   },
   "language": {
     "switchTo": "Deutsch"
@@ -20,6 +21,7 @@
     "customers": "Customers",
     "quotes": "Quotes",
     "orders": "Orders",
+    "calendar": "Calendar",
     "products": "Products",
     "suppliers": "Suppliers",
     "users": "Users",
@@ -219,5 +221,31 @@
     "create": "Create order",
     "view": "View order {{number}}",
     "advanceTo": "Mark as: {{status}}"
+  },
+  "appointmentTypes": {
+    "MEASUREMENT": "Measurement",
+    "DELIVERY": "Delivery",
+    "INSTALLATION": "Installation"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "myJobs": "My jobs",
+    "new": "New appointment",
+    "edit": "Edit appointment",
+    "order": "Order",
+    "type": "Type",
+    "start": "Start",
+    "end": "End",
+    "time": "Time",
+    "assignee": "Assigned to",
+    "notes": "Notes",
+    "customer": "Customer",
+    "address": "Address",
+    "delete": "Delete",
+    "confirmDelete": "Really delete",
+    "orderRequired": "Choose an order",
+    "timeRequired": "Choose a date and time",
+    "assigneeRequired": "Choose an employee",
+    "endBeforeStart": "The end must be after the start"
   }
 }

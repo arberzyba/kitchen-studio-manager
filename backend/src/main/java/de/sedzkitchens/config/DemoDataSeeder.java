@@ -2,6 +2,8 @@ package de.sedzkitchens.config;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -11,6 +13,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import de.sedzkitchens.appointment.AppointmentRepository;
+import de.sedzkitchens.appointment.AppointmentRequest;
+import de.sedzkitchens.appointment.AppointmentService;
+import de.sedzkitchens.appointment.AppointmentType;
 import de.sedzkitchens.customer.AddressDto;
 import de.sedzkitchens.customer.ContactRequest;
 import de.sedzkitchens.customer.ContactType;
@@ -38,7 +44,7 @@ import de.sedzkitchens.user.UserRepository;
 import de.sedzkitchens.user.UserService;
 import lombok.RequiredArgsConstructor;
 
-// Fills an empty dev database with demo data: one login per role, customers, suppliers, products, quotes and an order.
+// Fills an empty dev database with demo data: one login per role, customers, suppliers, products, quotes, an order and its appointments.
 @Component
 @Profile("dev")
 @RequiredArgsConstructor
@@ -68,6 +74,10 @@ public class DemoDataSeeder implements ApplicationRunner {
 
 	private final OrderService orderService;
 
+	private final AppointmentRepository appointmentRepository;
+
+	private final AppointmentService appointmentService;
+
 	@Override
 	public void run(ApplicationArguments args) {
 		if (userRepository.count() == 0) {
@@ -88,6 +98,31 @@ public class DemoDataSeeder implements ApplicationRunner {
 		if (orderRepository.count() == 0) {
 			seedOrder();
 		}
+		if (appointmentRepository.count() == 0) {
+			seedAppointments();
+		}
+	}
+
+	// A past measurement plus an upcoming delivery and installation for the demo order
+	private void seedAppointments() {
+		Long salesId = userRepository.findByEmail("sales@sedzkitchens.de").orElseThrow().getId();
+		Long installerId = userRepository.findByEmail("installer@sedzkitchens.de").orElseThrow().getId();
+		orderRepository.findAll().stream().findFirst().ifPresent(order -> {
+			createAppointment(order.getId(), AppointmentType.MEASUREMENT, -5, "10:00", "11:00", salesId,
+					"Aufmaß vor Ort, Wasseranschluss und Steckdosen prüfen.");
+			createAppointment(order.getId(), AppointmentType.DELIVERY, 10, "08:00", "10:00", installerId,
+					"Anlieferung über den Hof, 2. Obergeschoss ohne Aufzug.");
+			createAppointment(order.getId(), AppointmentType.INSTALLATION, 12, "08:00", "16:30", installerId, null);
+		});
+	}
+
+	private void createAppointment(Long orderId, AppointmentType type, int daysFromToday, String start, String end,
+			Long assigneeId, String notes) {
+		LocalDate day = LocalDate.now().plusDays(daysFromToday);
+		ZoneId zone = ZoneId.systemDefault();
+		appointmentService.create(new AppointmentRequest(orderId, type,
+				day.atTime(LocalTime.parse(start)).atZone(zone).toInstant(),
+				day.atTime(LocalTime.parse(end)).atZone(zone).toInstant(), assigneeId, notes));
 	}
 
 	// Turns the accepted demo quote into an order that has already been measured

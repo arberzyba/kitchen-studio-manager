@@ -1,4 +1,5 @@
 import AssignmentIcon from '@mui/icons-material/Assignment'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
 import ContactsIcon from '@mui/icons-material/Contacts'
 import DescriptionIcon from '@mui/icons-material/Description'
 import HomeIcon from '@mui/icons-material/Home'
@@ -51,6 +52,7 @@ const NAV_ITEMS: {
     icon: <AssignmentIcon />,
     roles: ['ADMIN', 'SALES', 'OFFICE'],
   },
+  { to: '/calendar', labelKey: 'nav.calendar', icon: <CalendarMonthIcon /> },
   {
     to: '/products',
     labelKey: 'nav.products',

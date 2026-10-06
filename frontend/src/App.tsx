@@ -4,6 +4,7 @@ import { RequireAuth } from './auth/RequireAuth'
 import { CustomerDetailPage } from './customers/CustomerDetailPage'
 import { CustomerFormPage } from './customers/CustomerFormPage'
 import { CustomersPage } from './customers/CustomersPage'
+import { CalendarPage } from './calendar/CalendarPage'
 import { AppLayout } from './layout/AppLayout'
 import { OrderDetailPage } from './orders/OrderDetailPage'
 import { OrdersPage } from './orders/OrdersPage'
@@ -22,6 +23,7 @@ function App() {
       <Route element={<RequireAuth />}>
         <Route element={<AppLayout />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
           <Route element={<RequireAuth roles={['ADMIN', 'SALES', 'OFFICE']} />}>
             <Route path="/customers" element={<CustomersPage />} />
             <Route path="/customers/:id" element={<CustomerDetailPage />} />
