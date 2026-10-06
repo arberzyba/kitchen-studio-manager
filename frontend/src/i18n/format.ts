@@ -19,6 +19,14 @@ export function formatDate(value: string) {
   )
 }
 
+// For a calendar month such as 2026-10: Okt. 26 in German, Oct 26 in English
+export function formatMonth(value: string) {
+  return new Intl.DateTimeFormat(locale(), {
+    month: 'short',
+    year: '2-digit',
+  }).format(new Date(`${value}-01`))
+}
+
 // German amounts read 1.299,00 €; English ones €1,299.00
 export function formatCurrency(value: number) {
   return new Intl.NumberFormat(locale(), {

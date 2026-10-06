@@ -25,7 +25,7 @@ test('appointment is planned by sales, visible to its installer and can be cance
   page,
 }) => {
   await signIn(page, 'sales@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Calendar' }).click()
+  await page.getByRole('link', { name: 'Calendar', exact: true }).click()
   await page.getByRole('button', { name: 'New appointment' }).click()
   const dialog = page.getByRole('dialog')
 
@@ -34,7 +34,7 @@ test('appointment is planned by sales, visible to its installer and can be cance
   await expect(dialog.getByText('Choose an employee')).toBeVisible()
 
   await dialog.getByLabel('Order').fill('Müller')
-  await page.getByRole('option', { name: /AU-\d{4}-0001/ }).click()
+  await page.getByRole('option', { name: /Sabine Müller/ }).click()
   await dialog.getByLabel('Type').click()
   await page.getByRole('option', { name: 'Installation' }).click()
   await dialog.getByLabel('Start').fill(todayAt(13))
@@ -58,7 +58,7 @@ test('appointment is planned by sales, visible to its installer and can be cance
 
   // The installer sees the job with the customer's address, but cannot change it
   await signIn(page, 'installer@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Calendar' }).click()
+  await page.getByRole('link', { name: 'Calendar', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'My jobs' })).toBeVisible()
   await expect(
     page.getByRole('button', { name: 'New appointment' }),
@@ -73,7 +73,7 @@ test('appointment is planned by sales, visible to its installer and can be cance
   await signOut(page)
 
   await signIn(page, 'sales@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Calendar' }).click()
+  await page.getByRole('link', { name: 'Calendar', exact: true }).click()
   await event.click()
   await dialog.getByRole('button', { name: 'Delete' }).click()
   await dialog.getByRole('button', { name: 'Really delete' }).click()

@@ -322,5 +322,21 @@
     "confirmSend": "Rechnung {{number}} als PDF an {{email}} senden?",
     "sentTo": "Die Rechnung wurde an {{email}} gesendet.",
     "noEmail": "Für diesen Kunden ist keine E-Mail-Adresse hinterlegt, daher kann die Rechnung nicht per E-Mail gesendet werden."
+  },
+  "dashboard": {
+    "openQuotes": "Angebote ohne Antwort",
+    "openQuotesDetail": "{{amount}} insgesamt · {{drafts}} weitere im Entwurf",
+    "revenueThisMonth": "Umsatz in diesem Monat",
+    "revenueDetail": "Berechneter Nettobetrag",
+    "overduePayments": "Überfällige Zahlungen",
+    "overdueDetail_one": "{{count}} überfällige Rechnung",
+    "overdueDetail_other": "{{count}} überfällige Rechnungen",
+    "monthlyRevenue": "Umsatz pro Monat (netto)",
+    "netRevenue": "Nettoumsatz",
+    "upcomingInstallations": "Anstehende Montagen",
+    "noInstallations": "Keine Montagen geplant",
+    "overdueInvoices": "Überfällige Rechnungen",
+    "noOverdue": "Keine überfälligen Rechnungen",
+    "dueSince": "fällig seit {{date}}"
   }
 }

@@ -3,6 +3,7 @@ package de.sedzkitchens.appointment;
 import java.time.Instant;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,5 +22,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 			""")
 	List<Appointment> findInPeriod(@Param("from") Instant from, @Param("to") Instant to,
 			@Param("assigneeId") Long assigneeId);
+
+	// The next appointments of one type from a point in time on; the page limits how many
+	@EntityGraph(attributePaths = { "order", "order.quote", "order.quote.customer", "assignee" })
+	List<Appointment> findByTypeAndStartTimeGreaterThanEqualOrderByStartTime(AppointmentType type, Instant from,
+			Pageable pageable);
 
 }

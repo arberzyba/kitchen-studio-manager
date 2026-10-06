@@ -14,7 +14,7 @@ test('order shows its progress, items and totals', async ({ page }) => {
   await page.getByRole('gridcell', { name: 'Sabine Müller' }).click()
 
   await expect(
-    page.getByRole('heading', { name: /Order AU-\d{4}-0001/ }),
+    page.getByRole('heading', { name: /Order AU-\d{4}-\d{4}/ }),
   ).toBeVisible()
   // The demo order has been measured, so ordering from the supplier is the next step
   await expect(
@@ -23,17 +23,17 @@ test('order shows its progress, items and totals', async ({ page }) => {
   await expect(page.getByRole('cell', { name: 'EG-IK-80' })).toBeVisible()
   // The gross total appears in the invoice section and in the totals
   await expect(page.getByText('€6,862.02').first()).toBeVisible()
-  await expect(page.getByRole('link', { name: /AN-\d{4}-0001/ })).toBeVisible()
+  await expect(page.getByRole('link', { name: /AN-\d{4}-\d{4}/ })).toBeVisible()
 })
 
 test('accepted quote links to its order', async ({ page }) => {
   await signIn(page, 'sales@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Quotes' }).click()
+  await page.getByRole('link', { name: 'Quotes', exact: true }).click()
   await page.getByRole('gridcell', { name: 'Sabine Müller' }).click()
-  await page.getByRole('link', { name: /View order AU-\d{4}-0001/ }).click()
+  await page.getByRole('link', { name: /View order AU-\d{4}-\d{4}/ }).click()
 
   await expect(
-    page.getByRole('heading', { name: /Order AU-\d{4}-0001/ }),
+    page.getByRole('heading', { name: /Order AU-\d{4}-\d{4}/ }),
   ).toBeVisible()
 })
 

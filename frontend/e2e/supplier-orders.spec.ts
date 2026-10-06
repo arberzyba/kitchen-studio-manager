@@ -12,9 +12,9 @@ test('office looks up a supplier order with its items and purchase value', async
   page,
 }) => {
   await signIn(page, 'office@sedzkitchens.de')
-  await page.getByRole('link', { name: 'Supplier orders' }).click()
+  await page.getByRole('link', { name: 'Supplier orders', exact: true }).click()
   await expect(
-    page.getByRole('gridcell', { name: 'Westfalen Arbeitsplatten KG' }),
+    page.getByRole('gridcell', { name: 'Westfalen Arbeitsplatten KG' }).first(),
   ).toBeVisible()
 
   await page
@@ -23,12 +23,14 @@ test('office looks up a supplier order with its items and purchase value', async
   await expect(
     page.getByRole('gridcell', { name: 'Westfalen Arbeitsplatten KG' }),
   ).toHaveCount(0)
+  // Newest first, so this is the current kitchen's cabinet order
   await page
     .getByRole('gridcell', { name: 'Rheinland Küchenmöbel GmbH' })
+    .first()
     .click()
 
   await expect(
-    page.getByRole('heading', { name: /Supplier order BE-\d{4}-0001/ }),
+    page.getByRole('heading', { name: /Supplier order BE-\d{4}-\d{4}/ }),
   ).toBeVisible()
   // 4 x 112.00 + 2 x 198.00 + 5 x 84.00 + 1 x 265.00 at purchase prices
   await expect(page.getByRole('cell', { name: 'US-90-W' })).toBeVisible()
@@ -43,8 +45,9 @@ test('order page shows placed and open supplier orders', async ({ page }) => {
   await page.getByRole('link', { name: 'Orders', exact: true }).click()
   await page.getByRole('gridcell', { name: 'Sabine Müller' }).click()
 
-  await expect(page.getByRole('link', { name: /BE-\d{4}-0001/ })).toBeVisible()
-  await expect(page.getByRole('link', { name: /BE-\d{4}-0002/ })).toBeVisible()
+  await expect(page.getByRole('link', { name: /BE-\d{4}-\d{4}/ })).toHaveCount(
+    2,
+  )
   // The appliances have not been ordered yet
   await expect(page.getByText('Hausgeräte Nord Vertriebs GmbH')).toBeVisible()
   await expect(page.getByText('3 items to order')).toBeVisible()
@@ -64,7 +67,11 @@ test('sales can see supplier orders but not place or change them', async ({
     page.getByRole('button', { name: 'Order', exact: true }),
   ).toHaveCount(0)
 
-  await page.getByRole('link', { name: /BE-\d{4}-0001/ }).click()
+  // The cabinets were ordered first
+  await page
+    .getByRole('link', { name: /BE-\d{4}-\d{4}/ })
+    .first()
+    .click()
   await expect(page.getByRole('cell', { name: '€1,529.00' })).toBeVisible()
   await expect(
     page.getByRole('button', { name: 'Mark as delivered' }),
@@ -73,9 +80,9 @@ test('sales can see supplier orders but not place or change them', async ({
 
 test('installer has no access to supplier orders', async ({ page }) => {
   await signIn(page, 'installer@sedzkitchens.de')
-  await expect(page.getByRole('link', { name: 'Supplier orders' })).toHaveCount(
-    0,
-  )
+  await expect(
+    page.getByRole('link', { name: 'Supplier orders', exact: true }),
+  ).toHaveCount(0)
 
   await page.goto('/supplier-orders')
   await expect(page).toHaveURL('/')
