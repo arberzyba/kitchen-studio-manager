@@ -38,13 +38,16 @@ import de.sedzkitchens.quote.QuoteService;
 import de.sedzkitchens.quote.QuoteStatus;
 import de.sedzkitchens.supplier.SupplierRequest;
 import de.sedzkitchens.supplier.SupplierService;
+import de.sedzkitchens.supplierorder.SupplierOrderRepository;
+import de.sedzkitchens.supplierorder.SupplierOrderRequests;
+import de.sedzkitchens.supplierorder.SupplierOrderService;
 import de.sedzkitchens.user.CreateUserRequest;
 import de.sedzkitchens.user.Role;
 import de.sedzkitchens.user.UserRepository;
 import de.sedzkitchens.user.UserService;
 import lombok.RequiredArgsConstructor;
 
-// Fills an empty dev database with demo data: one login per role, customers, suppliers, products, quotes, an order and its appointments.
+// Fills an empty dev database with demo data: one login per role, customers, suppliers, products, quotes, an order, its appointments and supplier orders.
 @Component
 @Profile("dev")
 @RequiredArgsConstructor
@@ -78,6 +81,10 @@ public class DemoDataSeeder implements ApplicationRunner {
 
 	private final AppointmentService appointmentService;
 
+	private final SupplierOrderRepository supplierOrderRepository;
+
+	private final SupplierOrderService supplierOrderService;
+
 	@Override
 	public void run(ApplicationArguments args) {
 		if (userRepository.count() == 0) {
@@ -101,6 +108,21 @@ public class DemoDataSeeder implements ApplicationRunner {
 		if (appointmentRepository.count() == 0) {
 			seedAppointments();
 		}
+		if (supplierOrderRepository.count() == 0) {
+			seedSupplierOrders();
+		}
+	}
+
+	// Orders the demo order's cabinets (due next week) and worktops (due later); the appliances are left to order
+	private void seedSupplierOrders() {
+		orderRepository.findAll().stream().findFirst().ifPresent(order -> {
+			int[] daysUntilDelivery = { 7, 9 };
+			var pending = supplierOrderService.findPending(order.getId());
+			for (int i = 0; i < Math.min(daysUntilDelivery.length, pending.size()); i++) {
+				supplierOrderService.create(new SupplierOrderRequests.Create(order.getId(), pending.get(i).supplierId(),
+						LocalDate.now().plusDays(daysUntilDelivery[i]), null));
+			}
+		});
 	}
 
 	// A past measurement plus an upcoming delivery and installation for the demo order
