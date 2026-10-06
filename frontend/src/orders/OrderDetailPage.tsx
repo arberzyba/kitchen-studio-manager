@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
 import { api } from '../api/client'
 import { formatDate } from '../i18n/format'
+import { OrderInvoice } from '../invoices/OrderInvoice'
 import { QuoteItemsCard } from '../quotes/QuoteParts'
 import { OrderSupplierOrders } from '../supplierorders/OrderSupplierOrders'
 import { ORDER_STATUSES, type Order } from './types'
@@ -98,6 +99,8 @@ export function OrderDetailPage() {
       </Paper>
 
       <OrderSupplierOrders orderId={order.data.id} />
+
+      <OrderInvoice orderId={order.data.id} />
 
       <QuoteItemsCard quote={quote} />
     </Stack>
