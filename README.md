@@ -1,5 +1,7 @@
 # SedzKitchens – Kitchen Studio Manager
 
+[![CI](https://github.com/arberzyba/kitchen-studio-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/arberzyba/kitchen-studio-manager/actions/workflows/ci.yml)
+
 An internal management system for a kitchen studio (Küchenstudio). Employees use it to take a kitchen from first contact to final invoice: customers, quotes, orders, scheduling, supplier orders, invoices and a dashboard. Customers never log in.
 
 Built as a portfolio project with **Java 21, Spring Boot 4, PostgreSQL** and **React, TypeScript, MUI**. The interface is available in German and English and follows German business conventions: 19 % VAT, gapless document numbers, German quote and invoice layout, and GDPR export and erasure.
@@ -62,7 +64,9 @@ The password for all demo logins is `demo1234`. They are created together with t
 
 **Backend:** Java 21, Spring Boot 4.1 (Web MVC, Data JPA, Security, Validation, Mail, Actuator), PostgreSQL 17, Flyway, Lombok, MapStruct, OpenPDF, springdoc-openapi, JUnit 5 with MockMvc and H2, Maven.
 
-**Frontend:** React 19, TypeScript, Vite, MUI with the MUI data grid, React Router, TanStack Query, React Hook Form with Zod, FullCalendar, Recharts, react-i18next, ESLint and Prettier, Playwright.
+**Frontend:** React 19, TypeScript, Vite, MUI with the MUI data grid, React Router, TanStack Query, React Hook Form with Zod, FullCalendar, Recharts, react-i18next, ESLint and Prettier, Vitest, Playwright.
+
+**CI:** GitHub Actions build and test the backend, check and build the frontend, and run the browser tests against PostgreSQL on every push.
 
 ## Architecture
 
@@ -157,7 +161,8 @@ Emails are only written to the backend log unless a mail server is configured. T
 
 | What | Command | Notes |
 |---|---|---|
-| Backend tests | `cd backend && ./mvnw test` | Integration tests through the HTTP layer with an in-memory H2 database, plus unit tests for the price calculation. No PostgreSQL needed. |
+| Backend tests | `cd backend && ./mvnw verify` | Integration tests through the HTTP layer with an in-memory H2 database, unit tests for the price calculation, and a code-style check. No PostgreSQL needed. |
+| Frontend unit tests | `cd frontend && npm test` | Vitest: the quote calculation and the German and English number, date and currency formats. |
 | Browser tests | `cd frontend && npm run e2e` | Playwright against the running application. Needs the backend running on a freshly seeded database. |
 | Lint and format | `cd frontend && npm run lint && npx prettier --check .` | |
 
