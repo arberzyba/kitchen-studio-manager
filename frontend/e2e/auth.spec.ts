@@ -76,3 +76,18 @@ test('language can be switched to German and is remembered', async ({
   await expect(page.getByText('Anna Schneider (Administrator)')).toBeVisible()
   await page.screenshot({ path: 'test-results/german.png' })
 })
+
+test('expired session returns to a login page that works', async ({ page }) => {
+  // Simulates a browser that still holds a token from an earlier, expired session
+  await page.goto('/login')
+  await page.evaluate(() => localStorage.setItem('token', 'expired-token'))
+  await page.goto('/customers')
+  await expect(page).toHaveURL('/login')
+
+  await page.getByLabel('Email').fill('sales@sedzkitchens.de')
+  await page.getByLabel('Password').fill('demo1234')
+  await page.getByRole('button', { name: 'Sign in' }).click()
+  await expect(
+    page.getByRole('heading', { name: 'Welcome, Lukas' }),
+  ).toBeVisible()
+})
