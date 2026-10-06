@@ -1,5 +1,9 @@
 const TOKEN_KEY = 'token'
 
+// Empty in development, where the dev server forwards /api to the backend.
+// In production it is the address of the separately hosted backend.
+const API_URL = import.meta.env.VITE_API_URL ?? ''
+
 export function getToken() {
   return localStorage.getItem(TOKEN_KEY)
 }
@@ -36,7 +40,7 @@ type RequestOptions = { method?: string; body?: unknown }
 
 async function request(path: string, options: RequestOptions) {
   const token = getToken()
-  const response = await fetch(`/api${path}`, {
+  const response = await fetch(`${API_URL}/api${path}`, {
     method: options.method,
     headers: {
       ...(options.body !== undefined && { 'Content-Type': 'application/json' }),

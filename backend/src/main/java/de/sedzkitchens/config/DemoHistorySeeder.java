@@ -39,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 // It gives the dashboard a revenue history and one overdue invoice. Each kitchen goes through the normal
 // services; afterwards its dates are moved into the past, which the application itself does not allow.
 @Component
-@Profile("dev")
+@Profile({ "dev", "demo" })
 @RequiredArgsConstructor
 public class DemoHistorySeeder {
 

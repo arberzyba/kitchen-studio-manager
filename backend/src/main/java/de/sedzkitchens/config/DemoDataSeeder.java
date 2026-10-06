@@ -45,10 +45,10 @@ import de.sedzkitchens.user.UserRepository;
 import de.sedzkitchens.user.UserService;
 import lombok.RequiredArgsConstructor;
 
-// Fills an empty dev database with demo data: one login per role, customers, suppliers and products,
+// Fills an empty database with demo data, in development and on the public demo ("demo" profile): one login per role, customers, suppliers and products,
 // completed kitchens from earlier months, and one current kitchen that is still in progress.
 @Component
-@Profile("dev")
+@Profile({ "dev", "demo" })
 @RequiredArgsConstructor
 public class DemoDataSeeder implements ApplicationRunner {
 
